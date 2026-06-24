@@ -1,24 +1,18 @@
-from django.urls import path
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+"""Aggregates the per-slice url modules under /api/.
 
-from . import views
-from .auth import register
+Each feature slice owns its own urls.py; this root just mounts them. The full
+endpoint table lives in backend/README.md.
+"""
+from django.urls import include, path
 
 urlpatterns = [
-    # Auth
-    path('auth/register', register),
-    path('auth/login', TokenObtainPairView.as_view()),     # {username, password} -> {access, refresh}
-    path('auth/refresh', TokenRefreshView.as_view()),       # {refresh} -> {access}
-
-    path('me', views.me),
-    path('group', views.group),
-    path('players', views.players),
-    path('last-match', views.last_match),
-    path('activity', views.activity),
-    path('stats', views.stats),
-    path('leagues', views.leagues),
-    path('tournaments', views.tournaments),
-    path('chat', views.chat),
-    path('achievements', views.achievements),
-    path('matches', views.matches),
+    path('', include('api.accounts.urls')),
+    path('', include('api.players.urls')),
+    path('', include('api.matches.urls')),
+    path('', include('api.stats.urls')),
+    path('', include('api.groups.urls')),
+    path('', include('api.leagues.urls')),
+    path('', include('api.tournaments.urls')),
+    path('', include('api.chat.urls')),
+    path('', include('api.achievements.urls')),
 ]

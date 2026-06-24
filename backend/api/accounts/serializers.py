@@ -1,15 +1,12 @@
-"""Registration and auth-related endpoints (JWT via SimpleJWT)."""
+"""Registration serializer and helpers (JWT via SimpleJWT)."""
 import re
 
 from django.contrib.auth.models import User
-from django.db import transaction, IntegrityError
-from rest_framework import serializers, status
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
+from django.db import transaction
+from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import Player
+from api.players.models import Player
 
 
 def _unique_slug(base):
@@ -68,20 +65,3 @@ class RegisterSerializer(serializers.Serializer):
 def tokens_for(user):
     refresh = RefreshToken.for_user(user)
     return {'access': str(refresh.access_token), 'refresh': str(refresh)}
-
-
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def register(request):
-    serializer = RegisterSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-    try:
-        player = serializer.save()
-    except IntegrityError:
-        return Response({'detail': 'Registrazione non riuscita.'},
-                        status=status.HTTP_400_BAD_REQUEST)
-    # Mirror the login response so the frontend can store tokens immediately.
-    return Response(
-        {**tokens_for(player.user), 'player_id': player.slug},
-        status=status.HTTP_201_CREATED,
-    )
