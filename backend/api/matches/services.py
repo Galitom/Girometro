@@ -62,7 +62,7 @@ def recompute_all(match_of_interest=None, perspective=None):
             continue  # malformed match, skip defensively
 
         a_won = m.score_a > m.score_b
-        delta_a = compute_delta([p.elo for p in team_a], [p.elo for p in team_b], a_won)
+        delta_a = compute_delta([p.elo for p in team_a], [p.elo for p in team_b], m.score_a, m.score_b)
         delta_b = -delta_a
 
         # Keep the stored display delta in sync with the recomputed value.
