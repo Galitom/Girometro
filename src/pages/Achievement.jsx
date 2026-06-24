@@ -5,7 +5,7 @@ import Panel from '../components/ui/Panel';
 import ProgressBar from '../components/ui/ProgressBar';
 import { getAchievements } from '../api/mock';
 
-function AchIcon({ name, unlocked }) {
+function AchIcon({ name }) {
   const Comp = LucideIcons[name] || LucideIcons.Star;
   return <Comp size={26} />;
 }

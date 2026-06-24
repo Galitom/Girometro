@@ -3,7 +3,6 @@ import Avatar from '../components/ui/Avatar';
 import Chip from '../components/ui/Chip';
 import Delta from '../components/ui/Delta';
 import Panel, { PanelTitle } from '../components/ui/Panel';
-import ProgressBar from '../components/ui/ProgressBar';
 import LineChart from '../components/ui/LineChart';
 import { getMe, getStats } from '../api/mock';
 
@@ -19,7 +18,7 @@ export default function Statistiche() {
   if (!me || !stats) return null;
 
   const total = me.w + me.l;
-  const wr = Math.round(me.w / total * 100);
+  const wr = total ? Math.round(me.w / total * 100) : 0;
 
   return (
     <div className="screen-in">

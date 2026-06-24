@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Plus, Minus, Trophy, Frown } from 'lucide-react';
-import Avatar from '../components/ui/Avatar';
 import Chip from '../components/ui/Chip';
 import Delta from '../components/ui/Delta';
-import { submitMatch, ME, PLAYERS } from '../api/mock';
+import { submitMatch, getMe, getPlayers } from '../api/mock';
 
 function Stepper({ score, set, accent }) {
   return (
@@ -24,12 +23,12 @@ function Stepper({ score, set, accent }) {
   );
 }
 
-function PlayerSelect({ idx, players, set }) {
+function PlayerSelect({ idx, players, set, allPlayers, me }) {
   return (
     <select
       value={players[idx]?.id || ''}
       onChange={e => {
-        const np = PLAYERS.find(x => x.id === e.target.value);
+        const np = allPlayers.find(x => x.id === e.target.value);
         set(prev => { const n = [...prev]; n[idx] = np; return n; });
       }}
       className="disp"
@@ -40,21 +39,33 @@ function PlayerSelect({ idx, players, set }) {
       }}
     >
       <option value="" disabled>Scegli…</option>
-      {PLAYERS.map(pl => <option key={pl.id} value={pl.id}>{pl.id === ME.id ? 'Tu' : pl.name}</option>)}
+      {allPlayers.map(pl => <option key={pl.id} value={pl.id}>{pl.id === me?.id ? 'Tu' : pl.name}</option>)}
     </select>
   );
 }
 
 export default function RegistraModal({ onClose }) {
+  const [allPlayers, setAllPlayers] = useState(null);
+  const [me, setMe] = useState(null);
   const [mode, setMode] = useState('1vs1');
-  const [teamA, setTeamA] = useState([ME, null]);
-  const [teamB, setTeamB] = useState([PLAYERS[2], null]);
+  const [teamA, setTeamA] = useState([null, null]);
+  const [teamB, setTeamB] = useState([null, null]);
   const [sa, setSa] = useState(0);
   const [sb, setSb] = useState(0);
   const [result, setResult] = useState(null);
 
+  // Load players once, then seed the default matchup (me vs. the third player).
+  useEffect(() => {
+    Promise.all([getMe(), getPlayers()]).then(([m, players]) => {
+      setMe(m);
+      setAllPlayers(players);
+      setTeamA([m, null]);
+      setTeamB([players.find(p => p.id !== m.id) ?? null, null]);
+    });
+  }, []);
+
   const slots = mode === '1vs1' ? 1 : 2;
-  const valid = teamA.slice(0, slots).every(Boolean) && teamB.slice(0, slots).every(Boolean) && (sa === 5 || sb === 5) && sa !== sb;
+  const valid = allPlayers && teamA.slice(0, slots).every(Boolean) && teamB.slice(0, slots).every(Boolean) && (sa === 5 || sb === 5) && sa !== sb;
 
   const confirm = async () => {
     const res = await submitMatch({ mode, teamA: teamA.slice(0, slots), teamB: teamB.slice(0, slots), scoreA: sa, scoreB: sb });
@@ -105,14 +116,14 @@ export default function RegistraModal({ onClose }) {
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, gap: 12 }}>
                 <Chip tone="accent">Squadra A</Chip>
                 {Array.from({ length: slots }).map((_, i) => (
-                  <PlayerSelect key={i} idx={i} players={teamA} set={setTeamA} />
+                  <PlayerSelect key={i} idx={i} players={teamA} set={setTeamA} allPlayers={allPlayers || []} me={me} />
                 ))}
               </div>
               <div className="disp" style={{ fontSize: 34, color: 'var(--dim)', fontWeight: 700, padding: '0 16px', marginTop: 30 }}>VS</div>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, gap: 12 }}>
                 <Chip>Squadra B</Chip>
                 {Array.from({ length: slots }).map((_, i) => (
-                  <PlayerSelect key={i} idx={i} players={teamB} set={setTeamB} />
+                  <PlayerSelect key={i} idx={i} players={teamB} set={setTeamB} allPlayers={allPlayers || []} me={me} />
                 ))}
               </div>
             </div>

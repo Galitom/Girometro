@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { Plus, Shield, Trophy } from 'lucide-react';
 import Avatar from '../components/ui/Avatar';
 import Chip from '../components/ui/Chip';
@@ -22,6 +22,7 @@ function WebHead({ kicker, title, sub, right }) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { onRegistra } = useOutletContext();
   const [me, setMe] = useState(null);
   const [lastMatch, setLastMatch] = useState(null);
   const [activity, setActivity] = useState([]);
@@ -35,7 +36,7 @@ export default function Dashboard() {
   if (!me) return null;
 
   const total = me.w + me.l;
-  const wr = Math.round(me.w / total * 100);
+  const wr = total ? Math.round(me.w / total * 100) : 0;
 
   return (
     <div className="screen-in">
@@ -44,7 +45,7 @@ export default function Dashboard() {
         title={`Ciao, ${me.name.split(' ')[0]}`}
         sub="Ecco cosa è successo nell'arena ultimamente."
         right={
-          <button onClick={() => navigate('/registra')} className="glow-accent trans press-95 disp" style={{
+          <button onClick={onRegistra} className="glow-accent trans press-95 disp" style={{
             height: 52, padding: '0 26px', borderRadius: 14, border: 'none',
             background: 'var(--accent)', color: 'var(--accent-ink)',
             fontSize: 21, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.03em',

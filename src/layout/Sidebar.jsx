@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, BarChart3, TrendingUp,
-  Shield, Trophy, MessageCircle, Award, Settings,
+  Shield, Trophy, MessageCircle, Award, LogOut,
 } from 'lucide-react';
 import Avatar from '../components/ui/Avatar';
 
@@ -21,7 +21,7 @@ const NAV_GROUPS = [
   ]},
 ];
 
-export default function Sidebar({ me }) {
+export default function Sidebar({ me, onLogout }) {
   return (
     <aside style={{
       width: 'var(--sidebar-w)', flexShrink: 0,
@@ -94,7 +94,18 @@ export default function Sidebar({ me }) {
               <div style={{ fontSize: 14, fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{me.name}</div>
               <div className="mono" style={{ fontSize: 10.5, color: 'var(--accent)' }}>#{me.rank} · {me.elo} ELO</div>
             </div>
-            <Settings size={17} style={{ color: 'var(--dim)', flexShrink: 0 }} />
+            <button
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onLogout?.(); }}
+              title="Esci"
+              className="trans press-90"
+              style={{
+                flexShrink: 0, width: 32, height: 32, borderRadius: 9,
+                background: 'transparent', border: '1px solid var(--line)',
+                color: 'var(--dim)', cursor: 'pointer', display: 'grid', placeItems: 'center',
+              }}
+            >
+              <LogOut size={16} />
+            </button>
           </div>
         </NavLink>
       )}
