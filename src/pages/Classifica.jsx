@@ -4,7 +4,7 @@ import Avatar from '../components/ui/Avatar';
 import Chip from '../components/ui/Chip';
 import Delta from '../components/ui/Delta';
 import Panel from '../components/ui/Panel';
-import { getPlayers, getMe } from '../api/mock';
+import { getPlayers, getMe } from '../api/client';
 
 const MEDALS = ['#d8a23a', '#b8bcc4', '#bd7a44'];
 
@@ -20,7 +20,8 @@ export default function Classifica() {
   if (!players.length || !me) return null;
 
   const podium = players.slice(0, 3);
-  const display = [podium[1], podium[0], podium[2]];
+  // Visual podium order (2nd, 1st, 3rd); drop missing slots when fewer than 3 players.
+  const display = [podium[1], podium[0], podium[2]].filter(Boolean);
   const heights = { 0: 120, 1: 160, 2: 96 };
 
   return (

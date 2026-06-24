@@ -3,7 +3,7 @@ import { Award, Check, Lock } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import Panel from '../components/ui/Panel';
 import ProgressBar from '../components/ui/ProgressBar';
-import { getAchievements } from '../api/mock';
+import { getAchievements } from '../api/client';
 
 function AchIcon({ name }) {
   const Comp = LucideIcons[name] || LucideIcons.Star;

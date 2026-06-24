@@ -1,13 +1,15 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import TopBar from './TopBar';
 import RegistraModal from '../pages/RegistraModal';
-import { getGroup } from '../api/mock';
+import ErrorBoundary from '../components/ErrorBoundary';
+import { getGroup } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
 
 export default function AppLayout() {
   const { me, logout, refreshMe } = useAuth();
+  const { pathname } = useLocation();
   const [group, setGroup] = useState(null);
   const [registraOpen, setRegistraOpen] = useState(false);
 
@@ -26,7 +28,11 @@ export default function AppLayout() {
           maxWidth: 1280, width: '100%', margin: '0 auto',
           display: 'flex', flexDirection: 'column',
         }}>
-          <Outlet context={{ onRegistra: () => setRegistraOpen(true) }} />
+          {/* key=pathname remounts the boundary on navigation so a crashed
+              page doesn't keep showing the fallback after you move away. */}
+          <ErrorBoundary key={pathname}>
+            <Outlet context={{ onRegistra: () => setRegistraOpen(true) }} />
+          </ErrorBoundary>
         </div>
       </main>
       {registraOpen && (

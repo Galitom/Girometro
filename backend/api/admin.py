@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from .models import (
     Group, Player, Match, EloHistory, League, LeagueStanding,
-    Tournament, BracketMatch, ChatMessage, Achievement,
+    Tournament, BracketMatch, Achievement,
 )
 
 
@@ -41,5 +41,4 @@ class TournamentAdmin(admin.ModelAdmin):
 
 admin.site.register(Group)
 admin.site.register(EloHistory)
-admin.site.register(ChatMessage)
 admin.site.register(Achievement)

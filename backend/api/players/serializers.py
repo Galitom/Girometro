@@ -3,7 +3,7 @@
 Field names mirror the mock exactly (id, w, l, gf, ga, streak, best, delta, …)
 so swapping mock.js for fetch() calls needs no shape changes on the frontend.
 ``_MiniPlayer`` is the embedded player record reused by other slices (matches,
-stats, leagues, tournaments, chat).
+stats, leagues, tournaments).
 """
 from rest_framework import serializers
 

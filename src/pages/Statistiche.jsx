@@ -4,7 +4,7 @@ import Chip from '../components/ui/Chip';
 import Delta from '../components/ui/Delta';
 import Panel, { PanelTitle } from '../components/ui/Panel';
 import LineChart from '../components/ui/LineChart';
-import { getMe, getStats } from '../api/mock';
+import { getMe, getStats } from '../api/client';
 
 export default function Statistiche() {
   const [me, setMe] = useState(null);
@@ -51,7 +51,7 @@ export default function Statistiche() {
             { k: 'Win rate',         v: `${wr}%`,              c: 'var(--pos)' },
             { k: 'Gol fatti',        v: me.gf },
             { k: 'Gol subiti',       v: me.ga,                 c: 'var(--neg)' },
-            { k: 'Diff. reti',       v: `+${me.gf - me.ga}`,   c: 'var(--pos)' },
+            { k: 'Giri',             v: `${me.gf - me.ga >= 0 ? '+' : ''}${me.gf - me.ga}`, c: me.gf - me.ga >= 0 ? 'var(--pos)' : 'var(--neg)' },
             { k: 'Striscia record',  v: me.best,               c: 'var(--accent)' },
           ].map(s => (
             <Panel key={s.k} hover style={{ padding: 20 }}>

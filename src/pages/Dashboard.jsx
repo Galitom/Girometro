@@ -5,7 +5,7 @@ import Avatar from '../components/ui/Avatar';
 import Chip from '../components/ui/Chip';
 import Delta from '../components/ui/Delta';
 import Panel, { PanelTitle } from '../components/ui/Panel';
-import { getMe, getLastMatch, getActivity } from '../api/mock';
+import { getMe, getLastMatch, getActivity } from '../api/client';
 
 function WebHead({ kicker, title, sub, right }) {
   return (

@@ -1,8 +1,15 @@
 import { useState, useEffect } from 'react';
-import { X, Plus, Minus, Trophy, Frown } from 'lucide-react';
+import { X, Plus, Minus, Trophy, Frown, Calendar } from 'lucide-react';
 import Chip from '../components/ui/Chip';
 import Delta from '../components/ui/Delta';
-import { submitMatch, getMe, getPlayers } from '../api/mock';
+import { submitMatch, getMe, getPlayers } from '../api/client';
+
+// Today as a local YYYY-MM-DD string (not UTC, so it matches the user's day).
+function todayLocal() {
+  const d = new Date();
+  const off = d.getTimezoneOffset();
+  return new Date(d.getTime() - off * 60000).toISOString().slice(0, 10);
+}
 
 function Stepper({ score, set, accent }) {
   return (
@@ -52,7 +59,10 @@ export default function RegistraModal({ onClose }) {
   const [teamB, setTeamB] = useState([null, null]);
   const [sa, setSa] = useState(0);
   const [sb, setSb] = useState(0);
+  const [playedAt, setPlayedAt] = useState(todayLocal());
   const [result, setResult] = useState(null);
+
+  const today = todayLocal();
 
   // Load players once, then seed the default matchup (me vs. the third player).
   useEffect(() => {
@@ -65,10 +75,14 @@ export default function RegistraModal({ onClose }) {
   }, []);
 
   const slots = mode === '1vs1' ? 1 : 2;
-  const valid = allPlayers && teamA.slice(0, slots).every(Boolean) && teamB.slice(0, slots).every(Boolean) && (sa === 5 || sb === 5) && sa !== sb;
+  const valid = allPlayers && teamA.slice(0, slots).every(Boolean) && teamB.slice(0, slots).every(Boolean) && (sa === 10 || sb === 10) && sa !== sb;
 
   const confirm = async () => {
-    const res = await submitMatch({ mode, teamA: teamA.slice(0, slots), teamB: teamB.slice(0, slots), scoreA: sa, scoreB: sb });
+    const res = await submitMatch({
+      mode, teamA: teamA.slice(0, slots), teamB: teamB.slice(0, slots), scoreA: sa, scoreB: sb,
+      // Only send a date when backdating; today keeps the live timestamp.
+      playedAt: playedAt !== today ? playedAt : undefined,
+    });
     setResult({ won: sa > sb, eloChange: res.eloChange });
   };
 
@@ -128,8 +142,26 @@ export default function RegistraModal({ onClose }) {
               </div>
             </div>
 
+            {/* Date — defaults to today; change it to log an older match. */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 24 }}>
+              <Calendar size={16} style={{ color: 'var(--dim)', flexShrink: 0 }} />
+              <span className="mono" style={{ fontSize: 11, letterSpacing: '0.14em', color: 'var(--dim)', textTransform: 'uppercase' }}>Data</span>
+              <input
+                type="date"
+                value={playedAt}
+                max={today}
+                onChange={e => setPlayedAt(e.target.value || today)}
+                className="disp"
+                style={{
+                  background: 'var(--surface-2)', border: '1px solid var(--line)', borderRadius: 12,
+                  color: 'var(--txt)', padding: '10px 16px', fontSize: 17, fontWeight: 600,
+                  fontFamily: 'inherit', cursor: 'pointer', colorScheme: 'dark',
+                }}
+              />
+            </div>
+
             {/* Score */}
-            <div className="mono" style={{ fontSize: 11, letterSpacing: '0.16em', color: 'var(--dim)', textTransform: 'uppercase', textAlign: 'center', marginBottom: 16 }}>Punteggio finale · primo a 5</div>
+            <div className="mono" style={{ fontSize: 11, letterSpacing: '0.16em', color: 'var(--dim)', textTransform: 'uppercase', textAlign: 'center', marginBottom: 16 }}>Punteggio finale · primo a 10</div>
             <div style={{ background: 'var(--bg-2)', border: '1px solid var(--line)', borderRadius: 18, padding: '24px 16px', marginBottom: 28 }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around' }}>
                 <Stepper score={sa} set={setSa} accent />

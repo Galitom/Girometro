@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { getToken, getMe, login as apiLogin, register as apiRegister, logout as apiLogout } from '../api/mock';
+import { getToken, getMe, login as apiLogin, register as apiRegister, logout as apiLogout } from '../api/client';
 
 const AuthContext = createContext(null);
 

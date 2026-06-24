@@ -1,1 +1,24 @@
+# Dependencies
 /node_modules
+node_modules/
+
+# Build output
+/dist
+dist/
+*.local
+
+# Python (backend has its own backend/.gitignore too)
+venv/
+__pycache__/
+*.py[cod]
+
+# Logs & caches
+*.log
+.vite/
+.eslintcache
+
+# Editor / OS
+.DS_Store
+*.swp
+.idea/
+.vscode/

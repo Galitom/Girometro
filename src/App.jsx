@@ -7,7 +7,6 @@ import Classifica from './pages/Classifica';
 import Statistiche from './pages/Statistiche';
 import Leghe from './pages/Leghe';
 import Tornei from './pages/Tornei';
-import Chat from './pages/Chat';
 import Achievement from './pages/Achievement';
 
 function RequireAuth({ children }) {
@@ -36,7 +35,6 @@ export default function App() {
             <Route path="statistiche" element={<Statistiche />} />
             <Route path="leghe" element={<Leghe />} />
             <Route path="tornei" element={<Tornei />} />
-            <Route path="chat" element={<Chat />} />
             <Route path="achievement" element={<Achievement />} />
           </Route>
         </Routes>

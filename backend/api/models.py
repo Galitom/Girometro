@@ -10,10 +10,9 @@ from api.groups.models import Group
 from api.matches.models import Match, EloHistory
 from api.leagues.models import League, LeagueStanding
 from api.tournaments.models import Tournament, BracketMatch
-from api.chat.models import ChatMessage
 from api.achievements.models import Achievement
 
 __all__ = [
     'Player', 'Group', 'Match', 'EloHistory', 'League', 'LeagueStanding',
-    'Tournament', 'BracketMatch', 'ChatMessage', 'Achievement',
+    'Tournament', 'BracketMatch', 'Achievement',
 ]

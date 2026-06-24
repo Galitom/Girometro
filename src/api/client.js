@@ -1,7 +1,7 @@
 // API client for the Girometro Django backend.
 // Each export mirrors what the screens already expect; shapes are produced
-// server-side to match what this file used to return as mock data.
-// (Filename kept as mock.js so existing imports keep working.)
+// server-side to match the JSON each endpoint returns.
+// (Formerly mock.js, back when it returned hard-coded demo data.)
 
 const API = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8001/api';
 
@@ -108,7 +108,6 @@ export const getActivity = () => get('activity');
 export const getStats = () => get('stats');
 export const getLeagues = () => get('leagues');
 export const getTournaments = () => get('tournaments');
-export const getChat = () => get('chat');
 export const getAchievements = () => get('achievements');
 
 // RegistraModal passes player objects; the API wants their string ids (slugs).
@@ -119,4 +118,6 @@ export const submitMatch = (payload) =>
     teamB: payload.teamB.map((p) => p.id),
     scoreA: payload.scoreA,
     scoreB: payload.scoreB,
+    // Optional YYYY-MM-DD; omitted means "now" server-side.
+    ...(payload.playedAt ? { playedAt: payload.playedAt } : {}),
   });

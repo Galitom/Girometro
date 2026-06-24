@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, BarChart3, TrendingUp,
-  Shield, Trophy, MessageCircle, Award, LogOut,
+  Shield, Trophy, Award, LogOut,
 } from 'lucide-react';
 import Avatar from '../components/ui/Avatar';
 
@@ -16,8 +16,7 @@ const NAV_GROUPS = [
     { to: '/tornei',  icon: Trophy,  label: 'Tornei' },
   ]},
   { section: 'Social', items: [
-    { to: '/chat',        icon: MessageCircle, label: 'Chat', badge: 3 },
-    { to: '/achievement', icon: Award,         label: 'Achievement' },
+    { to: '/achievement', icon: Award, label: 'Achievement' },
   ]},
 ];
 

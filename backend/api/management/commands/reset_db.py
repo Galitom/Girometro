@@ -11,7 +11,7 @@ from django.db import transaction
 
 from api.models import (
     Group, Player, Match, EloHistory, League, LeagueStanding,
-    Tournament, BracketMatch, ChatMessage, Achievement,
+    Tournament, BracketMatch, Achievement,
 )
 
 
@@ -27,7 +27,7 @@ class Command(BaseCommand):
     @transaction.atomic
     def handle(self, *args, **options):
         for model in (EloHistory, BracketMatch, LeagueStanding, Match,
-                      ChatMessage, Achievement, Tournament, League, Player, Group):
+                      Achievement, Tournament, League, Player, Group):
             model.objects.all().delete()
 
         if not options['keep_users']:

@@ -96,7 +96,7 @@ def matches(request):
     try:
         match, elo_change = record_match(
             v['mode'], v['teamA'], v['teamB'], v['scoreA'], v['scoreB'],
-            perspective=me_player,
+            perspective=me_player, played_date=v.get('playedAt'),
         )
     except ValueError as e:
         return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
