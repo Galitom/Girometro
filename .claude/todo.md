@@ -13,8 +13,6 @@ lettura e va popolato via `/admin/`. Da implementare (endpoint POST + UI):
 - [ ] **Tornei** — creare torneo, generare il bracket, registrare i risultati delle fasi.
 - [ ] **Achievement** — al momento sono statici; renderli **calcolati** dai dati reali
       (es. "10 vittorie consecutive" derivato dallo storico) invece che inseriti a mano.
-- [ ] **Gruppo** (`/api/group`) — ora opzionale e vuoto; decidere se i giocatori
-      appartengono a uno o più gruppi e come si crea/sceglie.
 
 ## Pagine frontend ancora legate a dati finti
 
@@ -22,9 +20,20 @@ Da verificare e ricollegare ai dati reali (alcune mostrano ancora valori hard-co
 
 - [ ] `Statistiche.jsx` — il `Delta value={+140}` e il `Chip "Picco 1851"` sono ancora
       fissi; vanno derivati da `getStats()`.
+- [ ] `Statistiche.jsx` — sezione **rivalità** (miglior avversario/nemico storico) da
+      collegare a dati reali: endpoint dedicato o campo in `getStats()`.
+- [ ] `Statistiche.jsx` — sezione **miglior coppia** (compagno con cui si vince di più)
+      da collegare a dati reali.
 - [ ] Etichette varie ("90 giorni", "questa sett.") da rendere coerenti coi dati reali.
 - [ ] Verificare il comportamento di tutte le pagine con **DB vuoto / nuovo utente**
       (zero partite, zero rivalità): evitare stati rotti o vuoti poco chiari.
+
+## Pagine future
+
+- [ ] **Storico partite** — pagina dedicata con la lista di tutte le partite giocate
+      (filtrabili per giocatore/data), collegata a un endpoint `GET /api/matches`.
+- [ ] **Notifiche** — sistema per gestire e visualizzare notifiche in-app (es. sfide,
+      risultati, achievement sbloccati); valutare se push o solo polling.
 
 ## Autenticazione / sicurezza
 
@@ -47,8 +56,6 @@ Da verificare e ricollegare ai dati reali (alcune mostrano ancora valori hard-co
 
 - [ ] **Nessun test** su frontend né backend. Aggiungere almeno test sulla logica Elo
       (`api/services.py`, `api/elo.py`) e sul flusso auth.
-- [ ] Rinominare `src/api/mock.js` → `src/api/client.js` (ora è un client HTTP, non mock);
-      è stato lasciato col vecchio nome solo per stabilità degli import.
 - [ ] File `.env` per `VITE_API_URL` invece dell'URL di default nel codice.
 - [ ] Gestione errori UI più ricca (toast/messaggi) oltre alla schermata di login.
 
@@ -56,3 +63,8 @@ Da verificare e ricollegare ai dati reali (alcune mostrano ancora valori hard-co
 
 - Il backend gira su :8001 perché la :8000 era occupata sulla macchina di sviluppo.
 - Vedi `.claude/conversation-summary.md` per il contesto di come ci siamo arrivati.
+
+## Già fatto (storico)
+
+- [x] Rinominare `src/api/mock.js` → `src/api/client.js` (`a2cb6a3`).
+- [x] Rimuovere bottone gruppo e barra di ricerca dalla TopBar.
