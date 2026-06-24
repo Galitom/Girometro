@@ -91,18 +91,26 @@ export default function Dashboard() {
               <span className="mono" style={{ fontSize: 12, color: 'var(--muted)' }}>ULTIMA PARTITA</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 110 }}>
-                <Avatar player={me} size={62} accent />
-                <span style={{ fontSize: 14, fontWeight: 600, marginTop: 10 }}>Tu</span>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 110, gap: 6 }}>
+                {lastMatch.teamA.map(p => (
+                  <div key={p.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                    <Avatar player={p} size={lastMatch.teamA.length > 1 ? 46 : 62} accent />
+                    <span style={{ fontSize: 13, fontWeight: 600 }}>{p.name.split(' ')[0]}</span>
+                  </div>
+                ))}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                 <span className="disp txt-glow" style={{ fontSize: 84, fontWeight: 700, lineHeight: 1, color: 'var(--accent)' }}>{lastMatch.scoreA}</span>
                 <span className="disp" style={{ fontSize: 40, color: 'var(--dim)', fontWeight: 600 }}>–</span>
                 <span className="disp" style={{ fontSize: 84, fontWeight: 700, lineHeight: 1 }}>{lastMatch.scoreB}</span>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 110 }}>
-                <Avatar player={lastMatch.teamB[0]} size={62} />
-                <span style={{ fontSize: 14, fontWeight: 600, marginTop: 10 }}>{lastMatch.teamB[0].name.split(' ')[0]}</span>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 110, gap: 6 }}>
+                {lastMatch.teamB.map(p => (
+                  <div key={p.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                    <Avatar player={p} size={lastMatch.teamB.length > 1 ? 46 : 62} />
+                    <span style={{ fontSize: 13, fontWeight: 600 }}>{p.name.split(' ')[0]}</span>
+                  </div>
+                ))}
               </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 20, paddingTop: 16, borderTop: '1px dashed var(--line)' }}>
@@ -131,33 +139,51 @@ export default function Dashboard() {
       {/* Activity + quick links */}
       <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 20 }}>
         <Panel style={{ padding: 24 }}>
-          <PanelTitle action="Apri chat" onAction={() => navigate('/chat')}>Attività del gruppo</PanelTitle>
+          <PanelTitle>Attività del gruppo</PanelTitle>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            {activity.map(ev => (
-              <div key={ev.id} style={{
-                display: 'flex', alignItems: 'center', gap: 14,
-                padding: '12px 8px', borderRadius: 12,
-                background: ev.mine ? 'rgba(255,90,31,0.06)' : 'transparent',
-              }}>
-                <div style={{ position: 'relative', width: 46, height: 32, flexShrink: 0 }}>
-                  <Avatar player={ev.a} size={30} />
-                  <div style={{ position: 'absolute', left: 16, top: 3 }}><Avatar player={ev.b} size={30} /></div>
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 15 }}>
-                    <b>{ev.a.name.split(' ')[0]}</b>
-                    <span style={{ color: ev.sa > ev.sb ? 'var(--pos)' : 'var(--neg)' }}> ha {ev.sa > ev.sb ? 'battuto' : 'perso con'} </span>
-                    <b>{ev.b.name.split(' ')[0]}</b>
+            {activity.map(ev => {
+              const winners = ev.sa > ev.sb ? ev.teamA : ev.teamB;
+              const losers  = ev.sa > ev.sb ? ev.teamB : ev.teamA;
+              const names = arr => arr.map(p => p.name.split(' ')[0]).join(' e ');
+              const is2v2 = ev.teamA.length > 1 || ev.teamB.length > 1;
+              return (
+                <div key={ev.id} style={{
+                  display: 'flex', alignItems: 'center', gap: 14,
+                  padding: '12px 8px', borderRadius: 12,
+                  background: ev.mine ? 'rgba(255,90,31,0.06)' : 'transparent',
+                }}>
+                  <div style={{ position: 'relative', width: 46, height: 32, flexShrink: 0 }}>
+                    <Avatar player={ev.teamA[0]} size={30} />
+                    <div style={{ position: 'absolute', left: 16, top: 3 }}><Avatar player={ev.teamB[0]} size={30} /></div>
                   </div>
-                  <span className="mono" style={{ fontSize: 11, color: 'var(--dim)' }}>{ev.when} · {ev.mode}</span>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 15 }}>
+                      {is2v2 ? (
+                        <>
+                          <b>{names(winners)}</b>
+                          <span style={{ color: 'var(--pos)' }}> hanno battuto </span>
+                          <b>{names(losers)}</b>
+                        </>
+                      ) : (
+                        <>
+                          <b>{ev.teamA[0].name.split(' ')[0]}</b>
+                          <span style={{ color: ev.sa > ev.sb ? 'var(--pos)' : 'var(--neg)' }}>
+                            {ev.sa > ev.sb ? ' ha battuto ' : ' ha perso con '}
+                          </span>
+                          <b>{ev.teamB[0].name.split(' ')[0]}</b>
+                        </>
+                      )}
+                    </div>
+                    <span className="mono" style={{ fontSize: 11, color: 'var(--dim)' }}>{ev.when} · {ev.mode}</span>
+                  </div>
+                  <div className="disp" style={{ fontSize: 26, fontWeight: 700 }}>
+                    <span style={{ color: ev.sa > ev.sb ? 'var(--txt)' : 'var(--dim)' }}>{ev.sa}</span>
+                    <span style={{ color: 'var(--dim)' }}>–</span>
+                    <span style={{ color: ev.sb > ev.sa ? 'var(--txt)' : 'var(--dim)' }}>{ev.sb}</span>
+                  </div>
                 </div>
-                <div className="disp" style={{ fontSize: 26, fontWeight: 700 }}>
-                  <span style={{ color: ev.sa > ev.sb ? 'var(--txt)' : 'var(--dim)' }}>{ev.sa}</span>
-                  <span style={{ color: 'var(--dim)' }}>–</span>
-                  <span style={{ color: ev.sb > ev.sa ? 'var(--txt)' : 'var(--dim)' }}>{ev.sb}</span>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </Panel>
 
@@ -167,14 +193,14 @@ export default function Dashboard() {
               <Shield size={26} style={{ color: 'var(--accent)' }} />
             </div>
             <div className="disp" style={{ fontSize: 30, fontWeight: 700, textTransform: 'uppercase', lineHeight: 0.9 }}>Leghe</div>
-            <div style={{ fontSize: 13, color: 'var(--muted)', marginTop: 4 }}>2 attive · sei 2° in Lega Inverno</div>
+            <div style={{ fontSize: 13, color: 'var(--muted)', marginTop: 4 }}>Work in progress</div>
           </Panel>
           <Panel hover onClick={() => navigate('/tornei')} style={{ padding: 24 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
               <Trophy size={26} style={{ color: 'var(--accent)' }} />
             </div>
             <div className="disp" style={{ fontSize: 30, fontWeight: 700, textTransform: 'uppercase', lineHeight: 0.9 }}>Tornei</div>
-            <div style={{ fontSize: 13, color: 'var(--muted)', marginTop: 4 }}>Coppa del Bancone · sei ai semi</div>
+            <div style={{ fontSize: 13, color: 'var(--muted)', marginTop: 4 }}>Work in progress</div>
           </Panel>
         </div>
       </div>

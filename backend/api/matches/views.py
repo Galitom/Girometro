@@ -75,8 +75,8 @@ def activity(request):
             continue
         out.append({
             'id': m.id,
-            'a': _MiniPlayer(a[0]).data,
-            'b': _MiniPlayer(b[0]).data,
+            'teamA': _MiniPlayer(a, many=True).data,
+            'teamB': _MiniPlayer(b, many=True).data,
             'sa': m.score_a,
             'sb': m.score_b,
             'when': _humanize(m.played_at),
