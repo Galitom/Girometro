@@ -36,7 +36,7 @@ Il delta mostrato è quello del **vincitore** (chi fa 10 gol). Il perdente ricev
 il valore opposto con segno negativo. Il "gap Elo" è la differenza tra il rating
 del vincitore e quello del perdente prima della partita.
 
-| Risultato | Gap −200 | Gap −100 | Gap 0 | Gap +100 | Gap +200 | Gap +500 |
+| Risultato | Gap −1000 | Gap −500 | Gap 0 | Gap +500 | Gap +1000 | Gap +1500 |
 |-----------|:--------:|:--------:|:-----:|:--------:|:--------:|:--------:|
 | 10 – 0    | +24 | +20 | +16 |   +12    |    +8    |    +3    |
 | 10 – 1    | +21 | +18 | +13 |    +9    |    +5    |    +2    |
