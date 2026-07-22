@@ -1,6 +1,7 @@
 import { Bell, Plus } from 'lucide-react';
+import { canManageMatches } from '../auth/roles';
 
-export default function TopBar({ onRegistra }) {
+export default function TopBar({ me, onRegistra }) {
   return (
     <div style={{
       display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
@@ -22,14 +23,16 @@ export default function TopBar({ onRegistra }) {
           }} />
         </button>
 
-        <button onClick={onRegistra} className="glow-accent trans press-95 disp" style={{
-          height: 44, padding: '0 20px', borderRadius: 12,
-          border: 'none', background: 'var(--accent)', color: 'var(--accent-ink)',
-          fontSize: 18, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.03em',
-          cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 7,
-        }}>
-          <Plus size={20} strokeWidth={2.6} /> Partita
-        </button>
+        {canManageMatches(me) && (
+          <button onClick={onRegistra} className="glow-accent trans press-95 disp" style={{
+            height: 44, padding: '0 20px', borderRadius: 12,
+            border: 'none', background: 'var(--accent)', color: 'var(--accent-ink)',
+            fontSize: 18, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.03em',
+            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 7,
+          }}>
+            <Plus size={20} strokeWidth={2.6} /> Partita
+          </button>
+        )}
       </div>
     </div>
   );

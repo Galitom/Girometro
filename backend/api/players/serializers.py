@@ -22,7 +22,7 @@ class PlayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Player
-        fields = ['id', 'name', 'initials', 'color', 'elo',
+        fields = ['id', 'name', 'initials', 'color', 'elo', 'role',
                   'w', 'l', 'gf', 'ga', 'streak', 'best', 'delta']
 
     def get_delta(self, obj):

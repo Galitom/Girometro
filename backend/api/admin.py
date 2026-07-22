@@ -8,7 +8,9 @@ from .models import (
 
 @admin.register(Player)
 class PlayerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug', 'elo', 'wins', 'losses', 'streak', 'user')
+    list_display = ('name', 'slug', 'role', 'elo', 'wins', 'losses', 'streak', 'user')
+    list_filter = ('role',)
+    list_editable = ('role',)
     search_fields = ('name', 'slug')
 
 

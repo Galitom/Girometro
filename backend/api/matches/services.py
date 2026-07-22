@@ -124,3 +124,34 @@ def record_match(mode, team_a_slugs, team_b_slugs, score_a, score_b,
 
     elo_change = recompute_all(match_of_interest=match, perspective=perspective)
     return match, elo_change
+
+
+@transaction.atomic
+def update_match(match, mode, team_a_slugs, team_b_slugs, score_a, score_b,
+                 played_date=None):
+    """Overwrite an existing Match's fields, then replay the whole history so
+    every rating downstream stays consistent. Returns the updated match."""
+    team_a = list(Player.objects.filter(slug__in=team_a_slugs))
+    team_b = list(Player.objects.filter(slug__in=team_b_slugs))
+    if len(team_a) != len(team_a_slugs) or len(team_b) != len(team_b_slugs):
+        raise ValueError('Uno o più giocatori non esistono.')
+
+    match.mode = mode
+    match.score_a = score_a
+    match.score_b = score_b
+    if played_date is not None:
+        match.played_at = _resolve_played_at(played_date)
+    match.save(update_fields=['mode', 'score_a', 'score_b', 'played_at'])
+    match.team_a.set(team_a)
+    match.team_b.set(team_b)
+
+    recompute_all()
+    match.refresh_from_db()
+    return match
+
+
+@transaction.atomic
+def delete_match(match):
+    """Delete a Match, then rebuild every rating from the remaining history."""
+    match.delete()
+    recompute_all()

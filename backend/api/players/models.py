@@ -3,11 +3,26 @@ from django.db import models
 
 
 class Player(models.Model):
+    # Ruoli: 'player' vede soltanto (default), 'backoffice' aggiorna le partite,
+    # 'admin' fa tutto e gestisce i ruoli degli altri utenti.
+    ROLE_PLAYER = 'player'
+    ROLE_BACKOFFICE = 'backoffice'
+    ROLE_ADMIN = 'admin'
+    ROLE_CHOICES = [
+        (ROLE_PLAYER, 'Player'),
+        (ROLE_BACKOFFICE, 'Back office'),
+        (ROLE_ADMIN, 'Admin'),
+    ]
+
     # Stable slug used as the public id by the frontend (e.g. 'teo').
     slug = models.SlugField(primary_key=True, max_length=40)
     name = models.CharField(max_length=80)
     initials = models.CharField(max_length=4)
     color = models.CharField(max_length=9, default='#3f6f8f')
+
+    role = models.CharField(
+        max_length=16, choices=ROLE_CHOICES, default=ROLE_PLAYER,
+    )
 
     elo = models.IntegerField(default=1500)
     wins = models.IntegerField(default=0)
@@ -30,3 +45,12 @@ class Player(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def is_admin(self):
+        return self.role == self.ROLE_ADMIN
+
+    @property
+    def can_manage_matches(self):
+        """Admin e back office possono registrare/aggiornare le partite."""
+        return self.role in (self.ROLE_ADMIN, self.ROLE_BACKOFFICE)

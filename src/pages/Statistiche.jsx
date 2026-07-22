@@ -1,19 +1,22 @@
 import { useState, useEffect } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import Avatar from '../components/ui/Avatar';
 import Chip from '../components/ui/Chip';
 import Delta from '../components/ui/Delta';
 import Panel, { PanelTitle } from '../components/ui/Panel';
 import LineChart from '../components/ui/LineChart';
-import { getMe, getStats } from '../api/client';
+import { getStats } from '../api/client';
+import { useAuth } from '../auth/AuthContext';
 
 export default function Statistiche() {
-  const [me, setMe] = useState(null);
+  const { matchVersion } = useOutletContext();
+  const { me } = useAuth();
   const [stats, setStats] = useState(null);
 
+  // Reload stats/Elo series whenever a match is recorded.
   useEffect(() => {
-    getMe().then(setMe);
     getStats().then(setStats);
-  }, []);
+  }, [matchVersion]);
 
   if (!me || !stats) return null;
 

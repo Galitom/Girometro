@@ -1,21 +1,24 @@
 import { useState, useEffect } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import { Calendar } from 'lucide-react';
 import Avatar from '../components/ui/Avatar';
 import Chip from '../components/ui/Chip';
 import Delta from '../components/ui/Delta';
 import Panel from '../components/ui/Panel';
-import { getPlayers, getMe } from '../api/client';
+import { getPlayers } from '../api/client';
+import { useAuth } from '../auth/AuthContext';
 
 const MEDALS = ['#d8a23a', '#b8bcc4', '#bd7a44'];
 
 export default function Classifica() {
+  const { matchVersion } = useOutletContext();
+  const { me } = useAuth();
   const [players, setPlayers] = useState([]);
-  const [me, setMe] = useState(null);
 
+  // Reload the ranking whenever a match is recorded, so Elo updates live.
   useEffect(() => {
     getPlayers().then(setPlayers);
-    getMe().then(setMe);
-  }, []);
+  }, [matchVersion]);
 
   if (!players.length || !me) return null;
 

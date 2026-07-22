@@ -51,6 +51,9 @@ class RegisterSerializer(serializers.Serializer):
         user = User.objects.create_user(
             username=username, password=validated_data['password'],
         )
+        # Il primo utente registrato su un DB vuoto diventa admin, cosi c'e
+        # sempre qualcuno che puo gestire i ruoli. Gli altri partono da 'player'.
+        is_first = not Player.objects.exists()
         color = _PALETTE[Player.objects.count() % len(_PALETTE)]
         player = Player.objects.create(
             user=user,
@@ -58,6 +61,7 @@ class RegisterSerializer(serializers.Serializer):
             name=name,
             initials=_initials(name),
             color=color,
+            role=Player.ROLE_ADMIN if is_first else Player.ROLE_PLAYER,
         )
         return player
 

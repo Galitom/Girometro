@@ -52,6 +52,9 @@ function PlayerSelect({ idx, players, set, allPlayers, me }) {
 }
 
 export default function RegistraModal({ onClose }) {
+  // true once a match has been recorded, so the parent knows to refresh.
+  const [saved, setSaved] = useState(false);
+  const close = () => onClose(saved);
   const [allPlayers, setAllPlayers] = useState(null);
   const [me, setMe] = useState(null);
   const [mode, setMode] = useState('1vs1');
@@ -84,10 +87,11 @@ export default function RegistraModal({ onClose }) {
       playedAt: playedAt !== today ? playedAt : undefined,
     });
     setResult({ won: sa > sb, eloChange: res.eloChange });
+    setSaved(true);
   };
 
   return (
-    <div onClick={onClose} style={{
+    <div onClick={close} style={{
       position: 'fixed', inset: 0, zIndex: 100,
       background: 'rgba(3,3,4,0.82)', backdropFilter: 'blur(6px)',
       display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24,
@@ -102,7 +106,7 @@ export default function RegistraModal({ onClose }) {
           <>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28 }}>
               <h2 className="disp disp-tight" style={{ fontSize: 40, fontWeight: 700, textTransform: 'uppercase', margin: 0 }}>Registra Partita</h2>
-              <button onClick={onClose} style={{
+              <button onClick={close} style={{
                 width: 40, height: 40, borderRadius: 12, background: 'var(--surface-2)',
                 border: '1px solid var(--line)', color: 'var(--muted)', cursor: 'pointer',
                 display: 'grid', placeItems: 'center',
@@ -201,7 +205,7 @@ export default function RegistraModal({ onClose }) {
               <span style={{ color: 'var(--muted)', fontSize: 15 }}>Elo</span>
               <Delta value={result.eloChange} />
             </div>
-            <button onClick={onClose} className="glow-accent trans press-95 disp" style={{
+            <button onClick={close} className="glow-accent trans press-95 disp" style={{
               marginTop: 32, padding: '16px 52px', borderRadius: 15, border: 'none',
               cursor: 'pointer', background: 'var(--accent)', color: 'var(--accent-ink)',
               fontSize: 24, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.03em',

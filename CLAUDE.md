@@ -58,9 +58,17 @@ React 19 + Vite 8, React Router 7. No TypeScript, no CSS framework, no state-man
 - `src/components/ui/` — small reusable primitives: `Panel`/`PanelTitle` (card wrapper used
   everywhere), `Avatar`, `Chip`, `Delta` (signed +/- Elo badge), `ProgressBar`, `LineChart`.
 - `src/components/ErrorBoundary.jsx` — catches React render errors and shows a fallback.
-- `src/layout/` — `Sidebar` (nav as `NAV_GROUPS`; user mini-card with logout), `TopBar` (campanello
-  + bottone "Partita"; niente barra di ricerca né selettore gruppo), `AppLayout`.
+- `src/layout/` — `Sidebar` (nav as `NAV_GROUPS`; user mini-card with logout; appends an "Admin"
+  group with "Gestione partite" + "Gestione ruoli" only when `isAdmin(me)`), `TopBar` (campanello + bottone "Partita",
+  shown only when `canManageMatches(me)`; niente barra di ricerca né selettore gruppo), `AppLayout`.
 - `src/pages/Login.jsx` — combined login/register screen.
+- `src/pages/GestioneRuoli.jsx` — admin-only role management screen (list users, set role); routed at
+  `/gestione-ruoli` behind `RequireAdmin` in `App.jsx`.
+- `src/pages/GestionePartite.jsx` — admin-only match management screen: filter by day, inline editor
+  (mode, date, players, score) + delete; routed at `/gestione-partite` behind `RequireAdmin`.
+- `src/auth/roles.js` — role constants (`ROLES`), Italian labels (`ROLE_LABELS`), and permission
+  helpers `isAdmin(me)` / `canManageMatches(me)`. **Mirror of the backend roles — read `me.role`,
+  never hard-code role strings in components.** `me.role` comes from `getMe()`.
 
 ## Backend architecture
 
@@ -79,7 +87,9 @@ api/
   leagues/       # league standings (read-only from frontend)
   tournaments/   # bracket (read-only from frontend)
   achievements/  # achievement list (read-only from frontend)
-  shared/        # elo.py (compute_delta), request.py (_get_me helper)
+  admin_roles/   # role management (admin-only): list users, set role
+  admin_matches/ # match management (admin-only): search by day, edit, delete
+  shared/        # elo.py (compute_delta), request.py (get_me), permissions.py (role guards)
   management/commands/
     reset_db.py       # wipe data
     recompute_elo.py  # replay all matches and rebuild Elo
@@ -93,13 +103,33 @@ are the contract with the frontend.
   unique `slug`/`initials`/color, returns JWT tokens). Login/refresh use SimpleJWT's views at
   `/api/auth/login` and `/api/auth/refresh`. DRF default permission is `AllowAny` (reads are
   public); `me`, `stats`, and `matches` require `IsAuthenticated`.
+- **Roles** — every `Player` has a `role`: `player` (default, read-only access), `backoffice`
+  (can record/update matches), `admin` (full access + manages other users' roles). Role guards live
+  in `shared/permissions.py` (`CanManageMatches` = admin/backoffice, `IsAdmin` = admin) and read the
+  role via `get_me`. `POST /api/matches` requires `CanManageMatches`; the `admin_roles` endpoints
+  require `IsAdmin`. The role is exposed on `/api/me` and `/api/players` (serializer field `role`).
+  **Bootstrap: the first user registered on an empty DB is auto-promoted to `admin`** so there's
+  always someone who can hand out roles; everyone else starts as `player`. On an already-populated DB,
+  promote the first admin via `/admin/` (or `createsuperuser` + edit their Player), then manage the
+  rest from the `/gestione-ruoli` UI.
+- **Role management API** (`admin_roles/`, admin-only): `GET /api/admin/users` lists all users with
+  their role; `PATCH /api/admin/users/<slug>/role` sets a role. A guard blocks the last admin from
+  demoting themselves (else nobody could manage roles).
+- **Match management API** (`admin_matches/`, admin-only): `GET /api/admin/matches?date=YYYY-MM-DD`
+  lists matches (optionally filtered to one local day), each row carrying full player objects **plus**
+  `teamAIds`/`teamBIds` (slug lists) and `playedAt` as `YYYY-MM-DD` so the editor form can bind to
+  them. `PATCH /api/admin/matches/<id>` edits a match (reuses `SubmitMatchSerializer` for validation);
+  `DELETE /api/admin/matches/<id>` removes it. Both go through `matches/services.py`
+  (`update_match`/`delete_match`), which call `recompute_all()` so every downstream rating stays
+  consistent. Distinct from `GET /api/all-matches`, which is public/read-only and omits the slug lists.
 - **Elo** — `shared/elo.py` implements goal-based Elo: `actual_score = goals_a / (goals_a + goals_b)`,
   K=32, team rating = average of members. `matches/services.py` → `recompute_all()` replays the
   **entire match history** in chronological order on every insert, so backdated matches stay
   consistent. Writes one `EloHistory` row per participant per match.
 - `api/models.py` — thin re-exports/shared base; real models live in each slice. Key models:
-  `Player` (`OneToOneField` to `auth.User`), `Match`, `EloHistory`, `League`/`LeagueStanding`,
-  `Tournament`/`BracketMatch`, `Achievement`, `Group`.
+  `Player` (`OneToOneField` to `auth.User`; carries `role` + `is_admin`/`can_manage_matches`
+  properties), `Match`, `EloHistory`, `League`/`LeagueStanding`, `Tournament`/`BracketMatch`,
+  `Achievement`, `Group`.
 
 The DB starts empty. Players/matches/Elo/ranking/stats come from live user activity. Leagues,
 tournaments, chat, and achievements are not yet creatable from the frontend — populate them via
@@ -123,7 +153,8 @@ while `DEBUG=True`).
 - "Registra Partita" (record a match) is a **modal**, not a route: `AppLayout` holds `registraOpen`
   state and exposes the opener via `<Outlet context={{ onRegistra }} />`. `TopBar` opens it through
   its `onRegistra` prop; `Dashboard.jsx` gets it via `useOutletContext()`. There is no `/registra`
-  route — always open through that context.
+  route — always open through that context. The opener button is hidden (both in `TopBar` and
+  `Dashboard`) unless `canManageMatches(me)`, matching the `CanManageMatches` server guard.
 - Elo recomputes the full history on every match insert (`recompute_all()`). This is intentional for
   correctness with backdated matches — fine for a small group.
 - The `client.js` filename was originally `mock.js`; some older comments may still reference the old

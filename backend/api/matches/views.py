@@ -13,6 +13,7 @@ from api.players.serializers import _MiniPlayer
 from api.matches.models import Match
 from api.matches.serializers import SubmitMatchSerializer
 from api.matches.services import record_match
+from api.shared.permissions import CanManageMatches
 from api.shared.request import get_me
 
 
@@ -65,6 +66,30 @@ def last_match(request):
 
 
 @api_view(['GET'])
+def match_list(request):
+    """Tutte le partite in ordine cronologico inverso, per la pagina 'Partite'."""
+    me_player = get_me(request)
+    out = []
+    for m in Match.objects.all():  # gia ordinato per -played_at
+        a = list(m.team_a.all())
+        b = list(m.team_b.all())
+        if not a or not b:
+            continue
+        out.append({
+            'id': m.id,
+            'mode': m.mode,
+            'teamA': _MiniPlayer(a, many=True).data,
+            'teamB': _MiniPlayer(b, many=True).data,
+            'scoreA': m.score_a,
+            'scoreB': m.score_b,
+            'when': _humanize(m.played_at),
+            'elo': m.elo_change,
+            'mine': bool(me_player and (me_player in a or me_player in b)),
+        })
+    return Response(out)
+
+
+@api_view(['GET'])
 def activity(request):
     me_player = get_me(request)
     out = []
@@ -87,7 +112,7 @@ def activity(request):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated, CanManageMatches])
 def matches(request):
     serializer = SubmitMatchSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)

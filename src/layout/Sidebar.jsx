@@ -1,26 +1,33 @@
 import { NavLink } from 'react-router-dom';
 import {
-  LayoutDashboard, BarChart3, TrendingUp,
-  Shield, Trophy, Award, LogOut,
+  LayoutDashboard, BarChart3, TrendingUp, Swords,
+  Shield, Trophy, Award, LogOut, ShieldCheck, ListChecks,
 } from 'lucide-react';
 import Avatar from '../components/ui/Avatar';
+import { isAdmin } from '../auth/roles';
 
 const NAV_GROUPS = [
   { section: 'Gioca', items: [
     { to: '/',             icon: LayoutDashboard, label: 'Dashboard' },
     { to: '/classifica',   icon: BarChart3,       label: 'Classifica' },
+    { to: '/partite',      icon: Swords,          label: 'Partite' },
     { to: '/statistiche',  icon: TrendingUp,      label: 'Statistiche' },
+    { to: '/achievement',  icon: Award,           label: 'Achievement' },
   ]},
   { section: 'Competi', items: [
     { to: '/leghe',   icon: Shield,  label: 'Leghe' },
     { to: '/tornei',  icon: Trophy,  label: 'Tornei' },
   ]},
-  { section: 'Social', items: [
-    { to: '/achievement', icon: Award, label: 'Achievement' },
-  ]},
 ];
 
+// Voci visibili solo agli admin, aggiunte in coda alla nav.
+const ADMIN_GROUP = { section: 'Admin', items: [
+  { to: '/gestione-partite', icon: ListChecks, label: 'Gestione partite' },
+  { to: '/gestione-ruoli',   icon: ShieldCheck, label: 'Gestione ruoli' },
+]};
+
 export default function Sidebar({ me, onLogout }) {
+  const groups = isAdmin(me) ? [...NAV_GROUPS, ADMIN_GROUP] : NAV_GROUPS;
   return (
     <aside style={{
       width: 'var(--sidebar-w)', flexShrink: 0,
@@ -45,7 +52,7 @@ export default function Sidebar({ me, onLogout }) {
 
       {/* Nav */}
       <nav style={{ flex: 1, overflowY: 'auto', padding: '18px 14px' }}>
-        {NAV_GROUPS.map(grp => (
+        {groups.map(grp => (
           <div key={grp.section} style={{ marginBottom: 22 }}>
             <div className="mono" style={{
               fontSize: 9.5, letterSpacing: '0.18em', color: 'var(--dim)',

@@ -5,7 +5,9 @@ import Avatar from '../components/ui/Avatar';
 import Chip from '../components/ui/Chip';
 import Delta from '../components/ui/Delta';
 import Panel, { PanelTitle } from '../components/ui/Panel';
-import { getMe, getLastMatch, getActivity } from '../api/client';
+import { getLastMatch, getActivity } from '../api/client';
+import { canManageMatches } from '../auth/roles';
+import { useAuth } from '../auth/AuthContext';
 
 function WebHead({ kicker, title, sub, right }) {
   return (
@@ -22,16 +24,18 @@ function WebHead({ kicker, title, sub, right }) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { onRegistra } = useOutletContext();
-  const [me, setMe] = useState(null);
+  const { onRegistra, matchVersion } = useOutletContext();
+  const { me } = useAuth();
   const [lastMatch, setLastMatch] = useState(null);
   const [activity, setActivity] = useState([]);
 
+  // Re-fetch match-derived data whenever a match is recorded (matchVersion bumps),
+  // so the last match and group activity reflect it live. `me` (Elo/rank) comes
+  // from useAuth() and is refreshed by AppLayout on the same event.
   useEffect(() => {
-    getMe().then(setMe);
     getLastMatch().then(setLastMatch);
     getActivity().then(setActivity);
-  }, []);
+  }, [matchVersion]);
 
   if (!me) return null;
 
@@ -45,14 +49,16 @@ export default function Dashboard() {
         title={`Ciao, ${me.name.split(' ')[0]}`}
         sub="Ecco cosa è successo nell'arena ultimamente."
         right={
-          <button onClick={onRegistra} className="glow-accent trans press-95 disp" style={{
-            height: 52, padding: '0 26px', borderRadius: 14, border: 'none',
-            background: 'var(--accent)', color: 'var(--accent-ink)',
-            fontSize: 21, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.03em',
-            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap',
-          }}>
-            <Plus size={22} strokeWidth={2.6} /> Registra Partita
-          </button>
+          canManageMatches(me) && (
+            <button onClick={onRegistra} className="glow-accent trans press-95 disp" style={{
+              height: 52, padding: '0 26px', borderRadius: 14, border: 'none',
+              background: 'var(--accent)', color: 'var(--accent-ink)',
+              fontSize: 21, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.03em',
+              cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap',
+            }}>
+              <Plus size={22} strokeWidth={2.6} /> Registra Partita
+            </button>
+          )
         }
       />
 

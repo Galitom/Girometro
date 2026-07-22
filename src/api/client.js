@@ -73,6 +73,13 @@ const post = (path, body) =>
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
+const patch = (path, body) =>
+  request(path, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+const del = (path) => request(path, { method: 'DELETE' });
 
 // --- auth ------------------------------------------------------------------
 export async function login(username, password) {
@@ -105,10 +112,31 @@ export const getGroup = () => get('group');
 export const getPlayers = () => get('players');
 export const getLastMatch = () => get('last-match');
 export const getActivity = () => get('activity');
+export const getMatches = () => get('all-matches');
 export const getStats = () => get('stats');
 export const getLeagues = () => get('leagues');
 export const getTournaments = () => get('tournaments');
 export const getAchievements = () => get('achievements');
+
+// --- gestione ruoli (solo admin) ------------------------------------------
+export const getManagedUsers = () => get('admin/users');
+export const setUserRole = (slug, role) =>
+  patch(`admin/users/${slug}/role`, { role });
+
+// --- gestione partite (solo admin) ----------------------------------------
+// date opzionale (YYYY-MM-DD) per filtrare le partite di un solo giorno.
+export const getAdminMatches = (date) =>
+  get(`admin/matches${date ? `?date=${date}` : ''}`);
+export const updateAdminMatch = (id, payload) =>
+  patch(`admin/matches/${id}`, {
+    mode: payload.mode,
+    teamA: payload.teamA.map((p) => (typeof p === 'string' ? p : p.id)),
+    teamB: payload.teamB.map((p) => (typeof p === 'string' ? p : p.id)),
+    scoreA: payload.scoreA,
+    scoreB: payload.scoreB,
+    ...(payload.playedAt ? { playedAt: payload.playedAt } : {}),
+  });
+export const deleteAdminMatch = (id) => del(`admin/matches/${id}`);
 
 // RegistraModal passes player objects; the API wants their string ids (slugs).
 export const submitMatch = (payload) =>
