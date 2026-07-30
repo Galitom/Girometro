@@ -3,6 +3,7 @@ import { X, Plus, Minus, Trophy, Frown, Calendar } from 'lucide-react';
 import Chip from '../components/ui/Chip';
 import Delta from '../components/ui/Delta';
 import { submitMatch, getMe, getPlayers } from '../api/client';
+import { useIsMobile } from '../hooks/useMediaQuery';
 
 // Today as a local YYYY-MM-DD string (not UTC, so it matches the user's day).
 function todayLocal() {
@@ -11,21 +12,23 @@ function todayLocal() {
   return new Date(d.getTime() - off * 60000).toISOString().slice(0, 10);
 }
 
-function Stepper({ score, set, accent }) {
+function Stepper({ score, set, accent, compact }) {
+  const btnW = compact ? 52 : 64;
+  const btnH = compact ? 46 : 52;
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: compact ? 10 : 14 }}>
       <button onClick={() => set(s => Math.min(10, s + 1))} className="trans press-90" style={{
-        width: 64, height: 52, borderRadius: 14, cursor: 'pointer', border: 'none',
+        width: btnW, height: btnH, borderRadius: 14, cursor: 'pointer', border: 'none',
         background: accent ? 'var(--accent)' : 'var(--surface-2)',
         color: accent ? 'var(--accent-ink)' : 'var(--txt)',
         display: 'grid', placeItems: 'center',
-      }}><Plus size={28} strokeWidth={2.6} /></button>
-      <span className="disp" style={{ fontSize: 96, fontWeight: 700, lineHeight: 0.8, color: accent ? 'var(--accent)' : 'var(--txt)', minWidth: 70, textAlign: 'center' }}>{score}</span>
+      }}><Plus size={compact ? 24 : 28} strokeWidth={2.6} /></button>
+      <span className="disp" style={{ fontSize: compact ? 68 : 96, fontWeight: 700, lineHeight: 0.8, color: accent ? 'var(--accent)' : 'var(--txt)', minWidth: compact ? 52 : 70, textAlign: 'center' }}>{score}</span>
       <button onClick={() => set(s => Math.max(0, s - 1))} className="trans press-90" style={{
-        width: 64, height: 52, borderRadius: 14, cursor: 'pointer',
+        width: btnW, height: btnH, borderRadius: 14, cursor: 'pointer',
         border: '1px solid var(--line)', background: 'transparent', color: 'var(--muted)',
         display: 'grid', placeItems: 'center',
-      }}><Minus size={28} strokeWidth={2.6} /></button>
+      }}><Minus size={compact ? 24 : 28} strokeWidth={2.6} /></button>
     </div>
   );
 }
@@ -41,8 +44,9 @@ function PlayerSelect({ idx, players, set, allPlayers, me }) {
       className="disp"
       style={{
         appearance: 'none', background: 'var(--surface-2)', border: '1px solid var(--line)',
-        borderRadius: 12, color: 'var(--txt)', padding: '12px 16px',
-        fontSize: 18, fontWeight: 600, cursor: 'pointer', textAlign: 'center', minWidth: 130,
+        borderRadius: 12, color: 'var(--txt)', padding: '12px 12px',
+        fontSize: 18, fontWeight: 600, cursor: 'pointer', textAlign: 'center',
+        width: '100%', maxWidth: 150,
       }}
     >
       <option value="" disabled>Scegli…</option>
@@ -52,6 +56,7 @@ function PlayerSelect({ idx, players, set, allPlayers, me }) {
 }
 
 export default function RegistraModal({ onClose }) {
+  const isMobile = useIsMobile();
   // true once a match has been recorded, so the parent knows to refresh.
   const [saved, setSaved] = useState(false);
   const close = () => onClose(saved);
@@ -94,18 +99,18 @@ export default function RegistraModal({ onClose }) {
     <div onClick={close} style={{
       position: 'fixed', inset: 0, zIndex: 100,
       background: 'rgba(3,3,4,0.82)', backdropFilter: 'blur(6px)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24,
+      display: 'flex', alignItems: 'center', justifyContent: 'center', padding: isMobile ? 12 : 24,
     }}>
       <div onClick={e => e.stopPropagation()} className="rise" style={{
         width: 720, maxWidth: '100%',
         background: 'var(--surface)', border: '1px solid var(--line)',
-        borderRadius: 24, padding: 36, position: 'relative',
-        maxHeight: '92vh', overflowY: 'auto',
+        borderRadius: 24, padding: isMobile ? 20 : 36, position: 'relative',
+        maxHeight: isMobile ? '94dvh' : '92vh', overflowY: 'auto',
       }}>
         {!result ? (
           <>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28 }}>
-              <h2 className="disp disp-tight" style={{ fontSize: 40, fontWeight: 700, textTransform: 'uppercase', margin: 0 }}>Registra Partita</h2>
+              <h2 className="disp disp-tight" style={{ fontSize: isMobile ? 30 : 40, fontWeight: 700, textTransform: 'uppercase', margin: 0 }}>Registra Partita</h2>
               <button onClick={close} style={{
                 width: 40, height: 40, borderRadius: 12, background: 'var(--surface-2)',
                 border: '1px solid var(--line)', color: 'var(--muted)', cursor: 'pointer',
@@ -130,15 +135,15 @@ export default function RegistraModal({ onClose }) {
             </div>
 
             {/* Player selects */}
-            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 28 }}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, gap: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8, marginBottom: 28 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, minWidth: 0, gap: 12 }}>
                 <Chip tone="accent">Squadra A</Chip>
                 {Array.from({ length: slots }).map((_, i) => (
                   <PlayerSelect key={i} idx={i} players={teamA} set={setTeamA} allPlayers={allPlayers || []} me={me} />
                 ))}
               </div>
-              <div className="disp" style={{ fontSize: 34, color: 'var(--dim)', fontWeight: 700, padding: '0 16px', marginTop: 30 }}>VS</div>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, gap: 12 }}>
+              <div className="disp" style={{ fontSize: isMobile ? 26 : 34, color: 'var(--dim)', fontWeight: 700, padding: isMobile ? '0 4px' : '0 16px', marginTop: 30 }}>VS</div>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, minWidth: 0, gap: 12 }}>
                 <Chip>Squadra B</Chip>
                 {Array.from({ length: slots }).map((_, i) => (
                   <PlayerSelect key={i} idx={i} players={teamB} set={setTeamB} allPlayers={allPlayers || []} me={me} />
@@ -166,11 +171,11 @@ export default function RegistraModal({ onClose }) {
 
             {/* Score */}
             <div className="mono" style={{ fontSize: 11, letterSpacing: '0.16em', color: 'var(--dim)', textTransform: 'uppercase', textAlign: 'center', marginBottom: 16 }}>Punteggio finale · primo a 10</div>
-            <div style={{ background: 'var(--bg-2)', border: '1px solid var(--line)', borderRadius: 18, padding: '24px 16px', marginBottom: 28 }}>
+            <div style={{ background: 'var(--bg-2)', border: '1px solid var(--line)', borderRadius: 18, padding: isMobile ? '20px 8px' : '24px 16px', marginBottom: 28 }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around' }}>
-                <Stepper score={sa} set={setSa} accent />
-                <span className="disp" style={{ fontSize: 40, color: 'var(--dim)', fontWeight: 700 }}>–</span>
-                <Stepper score={sb} set={setSb} />
+                <Stepper score={sa} set={setSa} accent compact={isMobile} />
+                <span className="disp" style={{ fontSize: isMobile ? 30 : 40, color: 'var(--dim)', fontWeight: 700 }}>–</span>
+                <Stepper score={sb} set={setSb} compact={isMobile} />
               </div>
             </div>
 
@@ -179,7 +184,7 @@ export default function RegistraModal({ onClose }) {
               cursor: valid ? 'pointer' : 'not-allowed',
               background: valid ? 'var(--accent)' : 'var(--surface-2)',
               color: valid ? 'var(--accent-ink)' : 'var(--dim)',
-              fontSize: 26, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.03em',
+              fontSize: isMobile ? 21 : 26, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.03em',
             }}>{valid ? 'Conferma risultato' : 'Completa la partita'}</button>
           </>
         ) : (

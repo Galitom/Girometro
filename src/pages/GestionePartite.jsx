@@ -7,6 +7,7 @@ import Panel from '../components/ui/Panel';
 import {
   getAdminMatches, updateAdminMatch, deleteAdminMatch, getPlayers,
 } from '../api/client';
+import { useIsMobile } from '../hooks/useMediaQuery';
 
 const TEAM_SIZE = { '1vs1': 1, '2vs2': 2 };
 
@@ -187,6 +188,7 @@ function TeamNames({ players }) {
 
 export default function GestionePartite() {
   const { onMatchChanged } = useOutletContext();
+  const isMobile = useIsMobile();
   const [date, setDate] = useState('');
   const [matches, setMatches] = useState(null);
   const [players, setPlayers] = useState([]);
@@ -217,7 +219,7 @@ export default function GestionePartite() {
     <div className="screen-in">
       <div style={{ marginBottom: 28 }}>
         <div className="mono" style={{ fontSize: 11, letterSpacing: '0.2em', color: 'var(--accent)', textTransform: 'uppercase', marginBottom: 8 }}>Amministrazione</div>
-        <h1 className="disp disp-tight" style={{ fontSize: 52, fontWeight: 700, lineHeight: 0.82, textTransform: 'uppercase', margin: 0 }}>Gestione Partite</h1>
+        <h1 className="disp disp-tight" style={{ fontSize: 'clamp(32px, 8.5vw, 52px)', fontWeight: 700, lineHeight: 0.82, textTransform: 'uppercase', margin: 0 }}>Gestione Partite</h1>
         <p style={{ fontSize: 15, color: 'var(--muted)', marginTop: 8 }}>Cerca le partite per giorno e modifica risultato, data e giocatori.</p>
       </div>
 
@@ -258,6 +260,32 @@ export default function GestionePartite() {
                   onSaved={afterChange} onDeleted={afterChange}
                   onCancel={() => setEditingId(null)}
                 />
+              ) : isMobile ? (
+                <div key={m.id} style={{
+                  display: 'flex', flexDirection: 'column', gap: 10, padding: '12px', borderRadius: 12,
+                  background: 'transparent', border: '1px solid var(--line)',
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div className="mono" style={{ fontSize: 10.5 }}>
+                      <span style={{ fontWeight: 700, color: 'var(--accent)' }}>{m.mode}</span>
+                      <span style={{ color: 'var(--dim)' }}> · {m.playedAt}</span>
+                    </div>
+                    <button onClick={() => setEditingId(m.id)} title="Modifica" className="trans press-90" style={{
+                      flexShrink: 0, width: 34, height: 34, borderRadius: 10,
+                      background: 'var(--surface-2)', border: '1px solid var(--line)',
+                      color: 'var(--muted)', cursor: 'pointer', display: 'grid', placeItems: 'center',
+                    }}><Pencil size={15} /></button>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ flex: 1, minWidth: 0, display: 'flex', justifyContent: 'flex-end' }}><TeamNames players={m.teamA} /></div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+                      <span className="disp" style={{ fontSize: 24, fontWeight: 700, color: m.scoreA > m.scoreB ? 'var(--accent)' : 'var(--dim)' }}>{m.scoreA}</span>
+                      <span className="mono" style={{ fontSize: 11, color: 'var(--dim)' }}>–</span>
+                      <span className="disp" style={{ fontSize: 24, fontWeight: 700, color: m.scoreB > m.scoreA ? 'var(--accent)' : 'var(--dim)' }}>{m.scoreB}</span>
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}><TeamNames players={m.teamB} /></div>
+                  </div>
+                </div>
               ) : (
                 <div key={m.id} style={{
                   display: 'flex', alignItems: 'center', gap: 16, padding: '12px 14px', borderRadius: 12,

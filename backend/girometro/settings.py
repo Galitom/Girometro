@@ -4,7 +4,13 @@ Django settings for the Girometro backend.
 Dev-oriented: SQLite, DEBUG on, permissive CORS so the Vite frontend
 (http://localhost:5173 / :5174) can talk to it out of the box.
 """
+import os
 from pathlib import Path
+
+# Let Django's MySQL backend (which imports MySQLdb) use the pure-Python
+# PyMySQL driver instead — no system libs / compilation needed.
+import pymysql  # noqa: E402
+pymysql.install_as_MySQLdb()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -60,12 +66,27 @@ TEMPLATES = [
 WSGI_APPLICATION = 'girometro.wsgi.application'
 
 # --- Database --------------------------------------------------------------
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Local MySQL. Password comes from the DB_PASSWORD env var; the default below
+# is dev-only. To fall back to the old SQLite file, set DB_ENGINE=sqlite.
+if os.environ.get('DB_ENGINE') == 'sqlite':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ.get('DB_NAME', 'girometro'),
+            'USER': os.environ.get('DB_USER', 'girometro'),
+            'PASSWORD': os.environ.get('DB_PASSWORD', 'Girometro_2026!'),
+            'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
+            'PORT': os.environ.get('DB_PORT', '3306'),
+            'OPTIONS': {'charset': 'utf8mb4'},
+        }
+    }
 
 # --- Password validation ---------------------------------------------------
 AUTH_PASSWORD_VALIDATORS = [

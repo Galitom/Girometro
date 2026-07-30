@@ -8,13 +8,14 @@ import Panel, { PanelTitle } from '../components/ui/Panel';
 import { getLastMatch, getActivity } from '../api/client';
 import { canManageMatches } from '../auth/roles';
 import { useAuth } from '../auth/AuthContext';
+import { useIsMobile } from '../hooks/useMediaQuery';
 
 function WebHead({ kicker, title, sub, right }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 28 }}>
+    <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 16, marginBottom: 28, flexWrap: 'wrap' }}>
       <div>
         {kicker && <div className="mono" style={{ fontSize: 11, letterSpacing: '0.2em', color: 'var(--accent)', textTransform: 'uppercase', marginBottom: 8 }}>{kicker}</div>}
-        <h1 className="disp disp-tight" style={{ fontSize: 52, fontWeight: 700, lineHeight: 0.82, textTransform: 'uppercase', margin: 0 }}>{title}</h1>
+        <h1 className="disp disp-tight" style={{ fontSize: 'clamp(34px, 9vw, 52px)', fontWeight: 700, lineHeight: 0.82, textTransform: 'uppercase', margin: 0 }}>{title}</h1>
         {sub && <p style={{ fontSize: 15, color: 'var(--muted)', marginTop: 8 }}>{sub}</p>}
       </div>
       {right}
@@ -24,8 +25,9 @@ function WebHead({ kicker, title, sub, right }) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { onRegistra, matchVersion } = useOutletContext();
+  const { onRegistra, matchVersion, onPlayerClick } = useOutletContext();
   const { me } = useAuth();
+  const isMobile = useIsMobile();
   const [lastMatch, setLastMatch] = useState(null);
   const [activity, setActivity] = useState([]);
 
@@ -63,12 +65,12 @@ export default function Dashboard() {
       />
 
       {/* Hero row */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1.4fr', gap: 20, marginBottom: 20 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.1fr 1.4fr', gap: 20, marginBottom: 20 }}>
         {/* Rank card */}
         <Panel style={{ padding: 28, position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(90% 80% at 80% 0%, rgba(255,90,31,0.12), transparent 60%)' }} />
           <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
-            <Avatar player={me} size={64} accent ring />
+            <div onClick={() => onPlayerClick(me.id)} className="press-97" style={{ cursor: 'pointer' }}><Avatar player={me} size={64} accent ring /></div>
             <div style={{ textAlign: 'right' }}>
               <div className="mono" style={{ fontSize: 11, letterSpacing: '0.14em', color: 'var(--accent)' }}>RANK GRUPPO</div>
               <div className="disp txt-glow" style={{ fontSize: 56, fontWeight: 700, lineHeight: 0.8, color: 'var(--accent)' }}>#{me.rank}</div>
@@ -97,23 +99,23 @@ export default function Dashboard() {
               <span className="mono" style={{ fontSize: 12, color: 'var(--muted)' }}>ULTIMA PARTITA</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 110, gap: 6 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: isMobile ? 72 : 110, gap: 6 }}>
                 {lastMatch.teamA.map(p => (
-                  <div key={p.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                    <Avatar player={p} size={lastMatch.teamA.length > 1 ? 46 : 62} accent />
+                  <div key={p.id} onClick={() => onPlayerClick(p.id)} className="press-97" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, cursor: 'pointer' }}>
+                    <Avatar player={p} size={lastMatch.teamA.length > 1 ? 46 : (isMobile ? 48 : 62)} accent />
                     <span style={{ fontSize: 13, fontWeight: 600 }}>{p.name.split(' ')[0]}</span>
                   </div>
                 ))}
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                <span className="disp txt-glow" style={{ fontSize: 84, fontWeight: 700, lineHeight: 1, color: 'var(--accent)' }}>{lastMatch.scoreA}</span>
-                <span className="disp" style={{ fontSize: 40, color: 'var(--dim)', fontWeight: 600 }}>–</span>
-                <span className="disp" style={{ fontSize: 84, fontWeight: 700, lineHeight: 1 }}>{lastMatch.scoreB}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 8 : 16 }}>
+                <span className="disp txt-glow" style={{ fontSize: isMobile ? 56 : 84, fontWeight: 700, lineHeight: 1, color: 'var(--accent)' }}>{lastMatch.scoreA}</span>
+                <span className="disp" style={{ fontSize: isMobile ? 28 : 40, color: 'var(--dim)', fontWeight: 600 }}>–</span>
+                <span className="disp" style={{ fontSize: isMobile ? 56 : 84, fontWeight: 700, lineHeight: 1 }}>{lastMatch.scoreB}</span>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 110, gap: 6 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: isMobile ? 72 : 110, gap: 6 }}>
                 {lastMatch.teamB.map(p => (
-                  <div key={p.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                    <Avatar player={p} size={lastMatch.teamB.length > 1 ? 46 : 62} />
+                  <div key={p.id} onClick={() => onPlayerClick(p.id)} className="press-97" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, cursor: 'pointer' }}>
+                    <Avatar player={p} size={lastMatch.teamB.length > 1 ? 46 : (isMobile ? 48 : 62)} />
                     <span style={{ fontSize: 13, fontWeight: 600 }}>{p.name.split(' ')[0]}</span>
                   </div>
                 ))}
@@ -128,7 +130,7 @@ export default function Dashboard() {
       </div>
 
       {/* Quick stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 20, marginBottom: 20 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap: isMobile ? 12 : 20, marginBottom: 20 }}>
         {[
           { k: 'Vittorie',       v: me.w,                                            icon: 'TrendingUp',   c: 'var(--pos)' },
           { k: 'Sconfitte',      v: me.l,                                            icon: 'TrendingDown', c: 'var(--neg)' },
@@ -143,7 +145,7 @@ export default function Dashboard() {
       </div>
 
       {/* Activity + quick links */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 20 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.5fr 1fr', gap: 20 }}>
         <Panel style={{ padding: 24 }}>
           <PanelTitle>Attività del gruppo</PanelTitle>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
@@ -159,8 +161,8 @@ export default function Dashboard() {
                   background: ev.mine ? 'rgba(255,90,31,0.06)' : 'transparent',
                 }}>
                   <div style={{ position: 'relative', width: 46, height: 32, flexShrink: 0 }}>
-                    <Avatar player={ev.teamA[0]} size={30} />
-                    <div style={{ position: 'absolute', left: 16, top: 3 }}><Avatar player={ev.teamB[0]} size={30} /></div>
+                    <div onClick={() => onPlayerClick(ev.teamA[0].id)} className="press-97" style={{ cursor: 'pointer' }}><Avatar player={ev.teamA[0]} size={30} /></div>
+                    <div onClick={() => onPlayerClick(ev.teamB[0].id)} className="press-97" style={{ position: 'absolute', left: 16, top: 3, cursor: 'pointer' }}><Avatar player={ev.teamB[0]} size={30} /></div>
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 15 }}>

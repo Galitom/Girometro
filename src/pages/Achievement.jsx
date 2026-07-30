@@ -4,6 +4,7 @@ import * as LucideIcons from 'lucide-react';
 import Panel from '../components/ui/Panel';
 import ProgressBar from '../components/ui/ProgressBar';
 import { getAchievements } from '../api/client';
+import { useIsMobile } from '../hooks/useMediaQuery';
 
 function AchIcon({ name }) {
   const Comp = LucideIcons[name] || LucideIcons.Star;
@@ -11,6 +12,7 @@ function AchIcon({ name }) {
 }
 
 export default function Achievement() {
+  const isMobile = useIsMobile();
   const [achievements, setAchievements] = useState([]);
 
   useEffect(() => {
@@ -21,10 +23,10 @@ export default function Achievement() {
 
   return (
     <div className="screen-in">
-      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 28 }}>
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 16, marginBottom: 28, flexWrap: 'wrap' }}>
         <div>
           <div className="mono" style={{ fontSize: 11, letterSpacing: '0.2em', color: 'var(--accent)', textTransform: 'uppercase', marginBottom: 8 }}>Profilo · Gamification</div>
-          <h1 className="disp disp-tight" style={{ fontSize: 52, fontWeight: 700, lineHeight: 0.82, textTransform: 'uppercase', margin: 0 }}>Achievement</h1>
+          <h1 className="disp disp-tight" style={{ fontSize: 'clamp(34px, 9vw, 52px)', fontWeight: 700, lineHeight: 0.82, textTransform: 'uppercase', margin: 0 }}>Achievement</h1>
         </div>
         <Panel className="glow-accent" style={{ padding: '14px 24px', borderColor: 'rgba(255,90,31,0.3)', display: 'flex', alignItems: 'center', gap: 16 }}>
           <Award size={30} style={{ color: 'var(--accent)', flexShrink: 0 }} />
@@ -38,7 +40,7 @@ export default function Achievement() {
         </Panel>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 18 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap: isMobile ? 12 : 18 }}>
         {achievements.map(a => {
           const pct = a.got ? 100 : Math.round((a.prog / a.of) * 100);
           return (

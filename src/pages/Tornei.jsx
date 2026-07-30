@@ -11,7 +11,7 @@ export default function Tornei() {
         <Trophy size={32} color="var(--accent)" strokeWidth={1.8} />
       </div>
       <div style={{ textAlign: 'center' }}>
-        <h1 className="disp disp-tight" style={{ fontSize: 52, fontWeight: 700, textTransform: 'uppercase', lineHeight: 0.85, margin: '0 0 14px' }}>Tornei</h1>
+        <h1 className="disp disp-tight" style={{ fontSize: 'clamp(38px, 9vw, 52px)', fontWeight: 700, textTransform: 'uppercase', lineHeight: 0.85, margin: '0 0 14px' }}>Tornei</h1>
         <div className="mono" style={{ fontSize: 12, letterSpacing: '0.18em', color: 'var(--accent)', textTransform: 'uppercase', marginBottom: 10 }}>Work in progress</div>
         <div style={{ fontSize: 15, color: 'var(--muted)', maxWidth: 320 }}>
           La gestione dei tornei è in arrivo. Per ora, creali e segui il bracket dall'area admin.

@@ -26,15 +26,44 @@ const ADMIN_GROUP = { section: 'Admin', items: [
   { to: '/gestione-ruoli',   icon: ShieldCheck, label: 'Gestione ruoli' },
 ]};
 
-export default function Sidebar({ me, onLogout }) {
+export default function Sidebar({ me, onLogout, isMobile = false, open = false, onClose, onNavigate }) {
   const groups = isAdmin(me) ? [...NAV_GROUPS, ADMIN_GROUP] : NAV_GROUPS;
+
+  // On mobile the sidebar is an off-canvas drawer: hidden off-screen, slid in
+  // over a dark overlay when `open`. On desktop it's a sticky rail as before.
+  const asideStyle = isMobile
+    ? {
+        width: 'min(84vw, var(--sidebar-w))', flexShrink: 0,
+        background: 'var(--bg)', borderRight: '1px solid var(--line)',
+        display: 'flex', flexDirection: 'column',
+        position: 'fixed', top: 0, left: 0, height: '100dvh', zIndex: 60,
+        transform: open ? 'translateX(0)' : 'translateX(-100%)',
+        transition: 'transform 0.26s cubic-bezier(0.22,1,0.36,1)',
+        boxShadow: open ? '0 0 40px rgba(0,0,0,0.5)' : 'none',
+      }
+    : {
+        width: 'var(--sidebar-w)', flexShrink: 0,
+        background: 'var(--bg)', borderRight: '1px solid var(--line)',
+        display: 'flex', flexDirection: 'column',
+        position: 'sticky', top: 0, height: '100vh',
+      };
+
   return (
-    <aside style={{
-      width: 'var(--sidebar-w)', flexShrink: 0,
-      background: 'var(--bg)', borderRight: '1px solid var(--line)',
-      display: 'flex', flexDirection: 'column',
-      position: 'sticky', top: 0, height: '100vh',
-    }}>
+    <>
+      {isMobile && (
+        <div
+          onClick={onClose}
+          aria-hidden
+          style={{
+            position: 'fixed', inset: 0, zIndex: 55,
+            background: 'rgba(3,3,4,0.6)', backdropFilter: 'blur(2px)',
+            opacity: open ? 1 : 0,
+            pointerEvents: open ? 'auto' : 'none',
+            transition: 'opacity 0.26s ease',
+          }}
+        />
+      )}
+    <aside style={asideStyle}>
       {/* Logo */}
       <div style={{ padding: '26px 24px 22px', borderBottom: '1px solid var(--line)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
@@ -60,7 +89,7 @@ export default function Sidebar({ me, onLogout }) {
             }}>{grp.section}</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
               {grp.items.map(item => (
-                <NavLink key={item.to} to={item.to} end={item.to === '/'}>
+                <NavLink key={item.to} to={item.to} end={item.to === '/'} onClick={onNavigate}>
                   {({ isActive }) => (
                     <div className="nav-item" style={{
                       display: 'flex', alignItems: 'center', gap: 12,
@@ -89,7 +118,7 @@ export default function Sidebar({ me, onLogout }) {
 
       {/* User mini */}
       {me && (
-        <NavLink to="/statistiche" style={{ margin: 14 }}>
+        <NavLink to="/statistiche" onClick={onNavigate} style={{ margin: 14 }}>
           <div className="nav-item" style={{
             padding: 12, borderRadius: 14,
             background: 'var(--surface)', border: '1px solid var(--line)',
@@ -116,5 +145,6 @@ export default function Sidebar({ me, onLogout }) {
         </NavLink>
       )}
     </aside>
+    </>
   );
 }

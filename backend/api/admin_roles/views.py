@@ -1,7 +1,10 @@
 """Gestione ruoli (solo admin):
     getManagedUsers -> GET   /api/admin/users
     setUserRole     -> PATCH /api/admin/users/<slug>/role
+    setUserPassword -> POST  /api/admin/users/<slug>/password
 """
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -59,4 +62,34 @@ def set_user_role(request, slug):
 
     target.role = role
     target.save(update_fields=['role'])
+    return Response(_user_row(target))
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, IsAdmin])
+def set_user_password(request, slug):
+    """Reimposta la password dell'utente collegato al Player.
+
+    Serve a chi ha dimenticato la password: lo comunica a un admin, che gliela
+    reimposta da qui e gli passa quella nuova. La password viene validata con gli
+    stessi AUTH_PASSWORD_VALIDATORS della registrazione."""
+    password = request.data.get('password') or ''
+
+    target = Player.objects.filter(slug=slug).first()
+    if not target:
+        return Response({'detail': 'Utente non trovato.'},
+                        status=status.HTTP_404_NOT_FOUND)
+    if not target.user_id:
+        return Response({'detail': 'Questo profilo non ha un account collegato.'},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    user = target.user
+    try:
+        validate_password(password, user=user)
+    except DjangoValidationError as exc:
+        return Response({'detail': ' '.join(exc.messages)},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    user.set_password(password)
+    user.save(update_fields=['password'])
     return Response(_user_row(target))
