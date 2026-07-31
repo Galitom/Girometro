@@ -26,9 +26,9 @@ export default function Achievement() {
       <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 16, marginBottom: 28, flexWrap: 'wrap' }}>
         <div>
           <div className="mono" style={{ fontSize: 11, letterSpacing: '0.2em', color: 'var(--accent)', textTransform: 'uppercase', marginBottom: 8 }}>Profilo · Gamification</div>
-          <h1 className="disp disp-tight" style={{ fontSize: 'clamp(34px, 9vw, 52px)', fontWeight: 700, lineHeight: 0.82, textTransform: 'uppercase', margin: 0 }}>Achievement</h1>
+          <h1 className="disp disp-tight glitch-title" style={{ fontSize: 'clamp(34px, 9vw, 52px)', fontWeight: 700, lineHeight: 0.9, textTransform: 'uppercase', margin: 0 }}>Achievement</h1>
         </div>
-        <Panel className="glow-accent" style={{ padding: '14px 24px', borderColor: 'rgba(255,90,31,0.3)', display: 'flex', alignItems: 'center', gap: 16 }}>
+        <Panel className="glow-accent" style={{ padding: '14px 24px', borderColor: 'rgba(var(--accent-rgb),0.3)', display: 'flex', alignItems: 'center', gap: 16 }}>
           <Award size={30} style={{ color: 'var(--accent)', flexShrink: 0 }} />
           <div>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 5 }}>
@@ -46,8 +46,8 @@ export default function Achievement() {
           return (
             <Panel key={a.id} hover style={{
               padding: 22, opacity: a.got ? 1 : 0.94,
-              borderColor: a.got ? 'rgba(255,90,31,0.28)' : 'var(--line)',
-              background: a.got ? 'rgba(255,90,31,0.06)' : 'var(--surface)',
+              borderColor: a.got ? 'rgba(var(--accent-rgb),0.28)' : 'var(--line)',
+              background: a.got ? 'rgba(var(--accent-rgb),0.06)' : 'var(--surface)',
             }}>
               <div style={{
                 width: 52, height: 52, borderRadius: 15, display: 'grid', placeItems: 'center', marginBottom: 14,

@@ -27,10 +27,11 @@ def _initials(name):
     return (name[:2] or 'PL').upper()
 
 
-# A small palette so each new player gets a distinct avatar color.
+# A bright neon "arcade" palette — each new player gets a distinct, luminous
+# avatar tile (dark initials read well on these). Order matches the mockup.
 _PALETTE = [
-    '#c2410c', '#3f6f8f', '#5b5fa8', '#8a4a78', '#2f7d72',
-    '#7a6a36', '#9a5230', '#4a5a6a', '#6a4a9a', '#3f8f6a',
+    '#3edcf0', '#ff4dd8', '#f2d648', '#5ee89c', '#7c6cff',
+    '#ff8a3d', '#4dd8a8', '#ff6ec7', '#9be34d', '#4db8ff',
 ]
 
 

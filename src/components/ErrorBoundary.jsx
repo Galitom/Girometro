@@ -33,7 +33,7 @@ export default class ErrorBoundary extends Component {
       }}>
         <div style={{
           width: 64, height: 64, borderRadius: 18, display: 'grid', placeItems: 'center',
-          background: 'rgba(255,90,31,0.1)', border: '1px solid rgba(255,90,31,0.3)',
+          background: 'rgba(var(--accent-rgb),0.1)', border: '1px solid rgba(var(--accent-rgb),0.3)',
           color: 'var(--accent)',
         }}>
           <AlertTriangle size={30} />

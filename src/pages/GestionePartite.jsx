@@ -219,7 +219,7 @@ export default function GestionePartite() {
     <div className="screen-in">
       <div style={{ marginBottom: 28 }}>
         <div className="mono" style={{ fontSize: 11, letterSpacing: '0.2em', color: 'var(--accent)', textTransform: 'uppercase', marginBottom: 8 }}>Amministrazione</div>
-        <h1 className="disp disp-tight" style={{ fontSize: 'clamp(32px, 8.5vw, 52px)', fontWeight: 700, lineHeight: 0.82, textTransform: 'uppercase', margin: 0 }}>Gestione Partite</h1>
+        <h1 className="disp disp-tight glitch-title" style={{ fontSize: 'clamp(32px, 8.5vw, 52px)', fontWeight: 700, lineHeight: 0.9, textTransform: 'uppercase', margin: 0 }}>Gestione Partite</h1>
         <p style={{ fontSize: 15, color: 'var(--muted)', marginTop: 8 }}>Cerca le partite per giorno e modifica risultato, data e giocatori.</p>
       </div>
 

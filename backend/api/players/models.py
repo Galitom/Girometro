@@ -18,7 +18,7 @@ class Player(models.Model):
     slug = models.SlugField(primary_key=True, max_length=40)
     name = models.CharField(max_length=80)
     initials = models.CharField(max_length=4)
-    color = models.CharField(max_length=9, default='#3f6f8f')
+    color = models.CharField(max_length=9, default='#3edcf0')
 
     role = models.CharField(
         max_length=16, choices=ROLE_CHOICES, default=ROLE_PLAYER,

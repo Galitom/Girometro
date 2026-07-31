@@ -29,7 +29,7 @@ export default function Statistiche() {
     <div className="screen-in">
       <div style={{ marginBottom: 28 }}>
         <div className="mono" style={{ fontSize: 11, letterSpacing: '0.2em', color: 'var(--accent)', textTransform: 'uppercase', marginBottom: 8 }}>Profilo · Statistiche</div>
-        <h1 className="disp disp-tight" style={{ fontSize: 'clamp(32px, 8.5vw, 52px)', fontWeight: 700, lineHeight: 0.82, textTransform: 'uppercase', margin: 0 }}>Le tue statistiche</h1>
+        <h1 className="disp disp-tight glitch-title" style={{ fontSize: 'clamp(32px, 8.5vw, 52px)', fontWeight: 700, lineHeight: 0.9, textTransform: 'uppercase', margin: 0 }}>Le tue statistiche</h1>
         <p style={{ fontSize: 15, color: 'var(--muted)', marginTop: 8 }}>Andamento, rivalità e performance nel tempo.</p>
       </div>
 
@@ -60,7 +60,7 @@ export default function Statistiche() {
             { k: 'Striscia record',  v: me.best,               c: 'var(--accent)' },
           ].map(s => (
             <Panel key={s.k} hover style={{ padding: 20 }}>
-              <div className="disp" style={{ fontSize: 40, fontWeight: 700, lineHeight: 0.82, color: s.c || 'var(--txt)' }}>{s.v}</div>
+              <div className="disp" style={{ fontSize: 40, fontWeight: 700, lineHeight: 0.9, color: s.c || 'var(--txt)' }}>{s.v}</div>
               <div className="mono" style={{ fontSize: 9.5, letterSpacing: '0.08em', color: 'var(--dim)', marginTop: 6, textTransform: 'uppercase' }}>{s.k}</div>
             </Panel>
           ))}
@@ -110,7 +110,7 @@ export default function Statistiche() {
                 <div className="mono" style={{ fontSize: 10.5, color: 'var(--dim)' }}>{pt.w}V · {pt.l}S in 2vs2</div>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <div className="disp" style={{ fontSize: 34, fontWeight: 700, color: 'var(--accent)', lineHeight: 0.85 }}>{pt.syn}</div>
+                <div className="disp" style={{ fontSize: 34, fontWeight: 700, color: 'var(--accent)', lineHeight: 0.9 }}>{pt.syn}</div>
                 <div className="mono" style={{ fontSize: 9, color: 'var(--dim)', letterSpacing: '0.1em' }}>SINTONIA</div>
               </div>
             </div>

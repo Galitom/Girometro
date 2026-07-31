@@ -15,7 +15,7 @@ function WebHead({ kicker, title, sub, right }) {
     <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 16, marginBottom: 28, flexWrap: 'wrap' }}>
       <div>
         {kicker && <div className="mono" style={{ fontSize: 11, letterSpacing: '0.2em', color: 'var(--accent)', textTransform: 'uppercase', marginBottom: 8 }}>{kicker}</div>}
-        <h1 className="disp disp-tight" style={{ fontSize: 'clamp(34px, 9vw, 52px)', fontWeight: 700, lineHeight: 0.82, textTransform: 'uppercase', margin: 0 }}>{title}</h1>
+        <h1 className="disp disp-tight glitch-title" style={{ fontSize: 'clamp(38px, 9vw, 58px)', lineHeight: 0.9, textTransform: 'uppercase', margin: 0 }}>{title}</h1>
         {sub && <p style={{ fontSize: 15, color: 'var(--muted)', marginTop: 8 }}>{sub}</p>}
       </div>
       {right}
@@ -53,9 +53,9 @@ export default function Dashboard() {
         right={
           canManageMatches(me) && (
             <button onClick={onRegistra} className="glow-accent trans press-95 disp" style={{
-              height: 52, padding: '0 26px', borderRadius: 14, border: 'none',
+              height: 52, padding: '0 26px', borderRadius: 8, border: 'none',
               background: 'var(--accent)', color: 'var(--accent-ink)',
-              fontSize: 21, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.03em',
+              fontSize: 21, textTransform: 'uppercase', letterSpacing: '0.05em',
               cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap',
             }}>
               <Plus size={22} strokeWidth={2.6} /> Registra Partita
@@ -68,7 +68,7 @@ export default function Dashboard() {
       <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.1fr 1.4fr', gap: 20, marginBottom: 20 }}>
         {/* Rank card */}
         <Panel style={{ padding: 28, position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(90% 80% at 80% 0%, rgba(255,90,31,0.12), transparent 60%)' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(90% 80% at 80% 0%, rgba(var(--accent-rgb),0.12), transparent 60%)' }} />
           <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
             <div onClick={() => onPlayerClick(me.id)} className="press-97" style={{ cursor: 'pointer' }}><Avatar player={me} size={64} accent ring /></div>
             <div style={{ textAlign: 'right' }}>
@@ -90,10 +90,16 @@ export default function Dashboard() {
 
         {/* Last match */}
         {lastMatch && (
-          <Panel className="glow-accent" style={{ padding: 28, borderColor: 'rgba(255,90,31,0.28)' }}>
+          <Panel style={{
+            padding: 28,
+            borderColor: lastMatch.won ? 'var(--yellow)' : 'rgba(var(--accent-rgb),0.28)',
+            boxShadow: lastMatch.won
+              ? '0 0 24px rgba(242,214,72,0.28)'
+              : '0 0 22px rgba(var(--accent-rgb),0.35)',
+          }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 22 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <Chip tone={lastMatch.won ? 'accent' : 'neg'}>{lastMatch.won ? '★ Vittoria' : 'Sconfitta'}</Chip>
+                <Chip tone={lastMatch.won ? 'accent' : 'neg'} style={lastMatch.won ? { background: 'rgba(242,214,72,0.14)', color: 'var(--yellow)', borderColor: 'rgba(242,214,72,0.4)' } : undefined}>{lastMatch.won ? '★ Vittoria' : 'Sconfitta'}</Chip>
                 <span className="mono" style={{ fontSize: 12, color: 'var(--dim)' }}>{lastMatch.mode.toUpperCase()} · {lastMatch.date}</span>
               </div>
               <span className="mono" style={{ fontSize: 12, color: 'var(--muted)' }}>ULTIMA PARTITA</span>
@@ -158,7 +164,7 @@ export default function Dashboard() {
                 <div key={ev.id} style={{
                   display: 'flex', alignItems: 'center', gap: 14,
                   padding: '12px 8px', borderRadius: 12,
-                  background: ev.mine ? 'rgba(255,90,31,0.06)' : 'transparent',
+                  background: ev.mine ? 'rgba(var(--accent-rgb),0.06)' : 'transparent',
                 }}>
                   <div style={{ position: 'relative', width: 46, height: 32, flexShrink: 0 }}>
                     <div onClick={() => onPlayerClick(ev.teamA[0].id)} className="press-97" style={{ cursor: 'pointer' }}><Avatar player={ev.teamA[0]} size={30} /></div>

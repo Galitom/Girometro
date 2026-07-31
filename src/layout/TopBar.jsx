@@ -8,11 +8,11 @@ export default function TopBar({ me, onRegistra, isMobile = false, onMenu }) {
       justifyContent: isMobile ? 'space-between' : 'flex-end',
       padding: isMobile ? '12px 16px' : '16px 36px', borderBottom: '1px solid var(--line)',
       position: 'sticky', top: 0, zIndex: 20,
-      background: 'rgba(6,6,7,0.85)', backdropFilter: 'blur(10px)',
+      background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(10px)',
     }}>
       {isMobile && (
         <button onClick={onMenu} aria-label="Apri menu" className="trans press-90" style={{
-          width: 44, height: 44, borderRadius: 12,
+          width: 44, height: 44, borderRadius: 8,
           background: 'var(--surface)', border: '1px solid var(--line)',
           display: 'grid', placeItems: 'center', cursor: 'pointer', color: 'var(--txt)',
         }}>
@@ -22,7 +22,7 @@ export default function TopBar({ me, onRegistra, isMobile = false, onMenu }) {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <button className="trans press-90" style={{
-          position: 'relative', width: 44, height: 44, borderRadius: 12,
+          position: 'relative', width: 44, height: 44, borderRadius: 8,
           background: 'var(--surface)', border: '1px solid var(--line)',
           display: 'grid', placeItems: 'center', cursor: 'pointer', color: 'var(--muted)',
         }}>
@@ -36,9 +36,9 @@ export default function TopBar({ me, onRegistra, isMobile = false, onMenu }) {
 
         {canManageMatches(me) && (
           <button onClick={onRegistra} className="glow-accent trans press-95 disp" style={{
-            height: 44, padding: isMobile ? '0 14px' : '0 20px', borderRadius: 12,
+            height: 44, padding: isMobile ? '0 14px' : '0 20px', borderRadius: 8,
             border: 'none', background: 'var(--accent)', color: 'var(--accent-ink)',
-            fontSize: 18, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.03em',
+            fontSize: 18, textTransform: 'uppercase', letterSpacing: '0.04em',
             cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 7,
           }}>
             <Plus size={20} strokeWidth={2.6} /> {!isMobile && 'Partita'}

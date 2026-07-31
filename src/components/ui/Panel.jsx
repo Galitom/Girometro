@@ -6,7 +6,7 @@ export default function Panel({ children, style = {}, hover = false, onClick, cl
       style={{
         background: 'var(--surface)',
         border: '1px solid var(--line)',
-        borderRadius: 20,
+        borderRadius: 6,
         cursor: onClick ? 'pointer' : 'default',
         ...style,
       }}
@@ -19,7 +19,7 @@ export default function Panel({ children, style = {}, hover = false, onClick, cl
 export function PanelTitle({ children, action, onAction }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
-      <h2 className="disp" style={{ fontSize: 24, fontWeight: 700, textTransform: 'uppercase', margin: 0 }}>{children}</h2>
+      <h2 className="disp" style={{ fontSize: 22, fontWeight: 400, textTransform: 'uppercase', letterSpacing: '0.03em', margin: 0 }}>{children}</h2>
       {action && (
         <button onClick={onAction} className="mono" style={{
           fontSize: 11, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase',

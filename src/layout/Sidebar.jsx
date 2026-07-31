@@ -66,14 +66,15 @@ export default function Sidebar({ me, onLogout, isMobile = false, open = false, 
     <aside style={asideStyle}>
       {/* Logo */}
       <div style={{ padding: '26px 24px 22px', borderBottom: '1px solid var(--line)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
-          <div style={{
-            width: 38, height: 38, borderRadius: 11, background: 'var(--accent)',
-            display: 'grid', placeItems: 'center', flexShrink: 0, position: 'relative', overflow: 'hidden',
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div className="glow-accent" style={{
+            width: 40, height: 40, background: 'var(--accent)',
+            clipPath: 'polygon(28% 0, 72% 0, 100% 50%, 72% 100%, 28% 100%, 0 50%)',
+            display: 'grid', placeItems: 'center', flexShrink: 0,
           }}>
-            <div style={{ width: 18, height: 18, borderRadius: '50%', background: 'radial-gradient(circle at 34% 30%, #fff, var(--accent-ink) 90%)' }} />
+            <div style={{ width: 15, height: 15, background: 'var(--accent-ink)', transform: 'rotate(45deg)', borderRadius: 2 }} />
           </div>
-          <div className="disp disp-tight" style={{ fontSize: 28, fontWeight: 700, lineHeight: 0.85, textTransform: 'uppercase' }}>
+          <div className="disp disp-tight" style={{ fontSize: 27, lineHeight: 0.85, textTransform: 'uppercase', letterSpacing: '0.01em' }}>
             Giro<span style={{ color: 'var(--accent)' }}>metro</span>
           </div>
         </div>
@@ -84,7 +85,7 @@ export default function Sidebar({ me, onLogout, isMobile = false, open = false, 
         {groups.map(grp => (
           <div key={grp.section} style={{ marginBottom: 22 }}>
             <div className="mono" style={{
-              fontSize: 9.5, letterSpacing: '0.18em', color: 'var(--dim)',
+              fontSize: 10, letterSpacing: '0.22em', color: 'var(--dim)',
               textTransform: 'uppercase', padding: '0 12px 10px',
             }}>{grp.section}</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -93,9 +94,9 @@ export default function Sidebar({ me, onLogout, isMobile = false, open = false, 
                   {({ isActive }) => (
                     <div className="nav-item" style={{
                       display: 'flex', alignItems: 'center', gap: 12,
-                      padding: '11px 12px', borderRadius: 11, cursor: 'pointer',
-                      background: isActive ? 'rgba(255,90,31,0.12)' : 'transparent',
-                      border: isActive ? '1px solid rgba(255,90,31,0.25)' : '1px solid transparent',
+                      padding: '11px 12px', borderRadius: 6, cursor: 'pointer',
+                      background: isActive ? 'rgba(var(--accent-rgb),0.1)' : 'transparent',
+                      border: isActive ? '1px solid rgba(var(--accent-rgb),0.3)' : '1px solid transparent',
                       color: isActive ? 'var(--accent)' : 'var(--muted)',
                     }}>
                       <item.icon size={20} strokeWidth={isActive ? 2.4 : 2} />
@@ -120,7 +121,7 @@ export default function Sidebar({ me, onLogout, isMobile = false, open = false, 
       {me && (
         <NavLink to="/statistiche" onClick={onNavigate} style={{ margin: 14 }}>
           <div className="nav-item" style={{
-            padding: 12, borderRadius: 14,
+            padding: 12, borderRadius: 6,
             background: 'var(--surface)', border: '1px solid var(--line)',
             display: 'flex', alignItems: 'center', gap: 11, cursor: 'pointer',
           }}>
@@ -134,7 +135,7 @@ export default function Sidebar({ me, onLogout, isMobile = false, open = false, 
               title="Esci"
               className="trans press-90"
               style={{
-                flexShrink: 0, width: 32, height: 32, borderRadius: 9,
+                flexShrink: 0, width: 32, height: 32, borderRadius: 6,
                 background: 'transparent', border: '1px solid var(--line)',
                 color: 'var(--dim)', cursor: 'pointer', display: 'grid', placeItems: 'center',
               }}

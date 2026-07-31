@@ -44,7 +44,7 @@ export default function Classifica() {
           <div className="mono" style={{ fontSize: 11, letterSpacing: '0.2em', color: 'var(--accent)', textTransform: 'uppercase', marginBottom: 8 }}>
             {players.length} giocatori
           </div>
-          <h1 className="disp disp-tight" style={{ fontSize: 'clamp(34px, 9vw, 52px)', fontWeight: 700, lineHeight: 0.82, textTransform: 'uppercase', margin: 0 }}>Classifica</h1>
+          <h1 className="disp disp-tight glitch-title" style={{ fontSize: 'clamp(34px, 9vw, 52px)', fontWeight: 700, lineHeight: 0.9, textTransform: 'uppercase', margin: 0 }}>Classifica</h1>
         </div>
         <div style={{ display: 'flex', gap: 6, background: 'var(--surface-2)', border: '1px solid var(--line)', borderRadius: 12, padding: 4, flexWrap: 'wrap' }}>
           {PERIODS.map(({ key, label }) => {
@@ -57,8 +57,8 @@ export default function Classifica() {
                 style={{
                   fontSize: 11, letterSpacing: '0.06em', textTransform: 'uppercase',
                   padding: '7px 12px', borderRadius: 9, cursor: 'pointer',
-                  border: '1px solid ' + (active ? 'rgba(255,90,31,0.3)' : 'transparent'),
-                  background: active ? 'rgba(255,90,31,0.12)' : 'transparent',
+                  border: '1px solid ' + (active ? 'rgba(var(--accent-rgb),0.3)' : 'transparent'),
+                  background: active ? 'rgba(var(--accent-rgb),0.12)' : 'transparent',
                   color: active ? 'var(--accent)' : 'var(--muted)',
                 }}
               >
@@ -86,7 +86,7 @@ export default function Classifica() {
                     width: '100%', marginTop: 10, height: heights[i],
                     borderRadius: '12px 12px 0 0',
                     background: place === 1
-                      ? 'linear-gradient(180deg, rgba(255,90,31,0.22), rgba(255,90,31,0.03))'
+                      ? 'linear-gradient(180deg, rgba(var(--accent-rgb),0.22), rgba(var(--accent-rgb),0.03))'
                       : 'var(--surface-2)',
                     border: '1px solid var(--line)', borderBottom: 'none',
                     display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: 12,
@@ -113,8 +113,8 @@ export default function Classifica() {
             return (
               <div key={p.id} onClick={() => onPlayerClick(p.id)} className={isMine ? '' : 'card-hover'} style={{
                 display: 'flex', alignItems: 'center', gap: isMobile ? 10 : 16, padding: isMobile ? '12px' : '12px 18px', borderRadius: 12,
-                background: isMine ? 'rgba(255,90,31,0.08)' : 'transparent',
-                border: isMine ? '1px solid rgba(255,90,31,0.3)' : '1px solid transparent',
+                background: isMine ? 'rgba(var(--accent-rgb),0.08)' : 'transparent',
+                border: isMine ? '1px solid rgba(var(--accent-rgb),0.3)' : '1px solid transparent',
                 cursor: 'pointer',
               }}>
                 <span className="disp" style={{ fontSize: 26, fontWeight: 700, width: 26, color: i < 3 ? MEDALS[i] : 'var(--dim)' }}>{i + 1}</span>

@@ -192,7 +192,7 @@ export default function RegistraModal({ onClose }) {
             <div style={{
               width: 110, height: 110, borderRadius: '50%', margin: '0 auto 22px',
               display: 'grid', placeItems: 'center',
-              background: result.won ? 'rgba(255,90,31,0.14)' : 'rgba(255,255,255,0.05)',
+              background: result.won ? 'rgba(var(--accent-rgb),0.14)' : 'rgba(255,255,255,0.05)',
               border: `2px solid ${result.won ? 'var(--accent)' : 'var(--line)'}`,
             }}>
               {result.won

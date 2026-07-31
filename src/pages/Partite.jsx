@@ -53,7 +53,7 @@ export default function Partite() {
           <div className="mono" style={{ fontSize: 11, letterSpacing: '0.2em', color: 'var(--accent)', textTransform: 'uppercase', marginBottom: 8 }}>
             {matches.length} {matches.length === 1 ? 'partita' : 'partite'}
           </div>
-          <h1 className="disp disp-tight" style={{ fontSize: 'clamp(34px, 9vw, 52px)', fontWeight: 700, lineHeight: 0.82, textTransform: 'uppercase', margin: 0 }}>Partite</h1>
+          <h1 className="disp disp-tight glitch-title" style={{ fontSize: 'clamp(34px, 9vw, 52px)', fontWeight: 700, lineHeight: 0.9, textTransform: 'uppercase', margin: 0 }}>Partite</h1>
           <p style={{ fontSize: 15, color: 'var(--muted)', marginTop: 8 }}>Lo storico completo di tutte le sfide.</p>
         </div>
       </div>
@@ -74,8 +74,8 @@ export default function Partite() {
                 return (
                   <div key={m.id} style={{
                     display: 'flex', flexDirection: 'column', gap: 10, padding: '12px 12px', borderRadius: 12,
-                    background: m.mine ? 'rgba(255,90,31,0.06)' : 'transparent',
-                    border: m.mine ? '1px solid rgba(255,90,31,0.22)' : '1px solid transparent',
+                    background: m.mine ? 'rgba(var(--accent-rgb),0.06)' : 'transparent',
+                    border: m.mine ? '1px solid rgba(var(--accent-rgb),0.22)' : '1px solid transparent',
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                       <div className="mono" style={{ fontSize: 10.5 }}>
@@ -100,8 +100,8 @@ export default function Partite() {
               return (
                 <div key={m.id} style={{
                   display: 'flex', alignItems: 'center', gap: 16, padding: '14px 16px', borderRadius: 12,
-                  background: m.mine ? 'rgba(255,90,31,0.06)' : 'transparent',
-                  border: m.mine ? '1px solid rgba(255,90,31,0.22)' : '1px solid transparent',
+                  background: m.mine ? 'rgba(var(--accent-rgb),0.06)' : 'transparent',
+                  border: m.mine ? '1px solid rgba(var(--accent-rgb),0.22)' : '1px solid transparent',
                 }}>
                   {/* mode + quando */}
                   <div style={{ width: 88, flexShrink: 0 }}>
