@@ -111,7 +111,7 @@ export default function Classifica() {
           {players.map((p, i) => {
             const isMine = p.id === me.id;
             return (
-              <div key={p.id} onClick={() => onPlayerClick(p.id)} className={isMine ? '' : 'card-hover'} style={{
+              <div key={p.id} onClick={() => onPlayerClick(p.id)} className={`row-divider ${isMine ? '' : 'card-hover'}`} style={{
                 display: 'flex', alignItems: 'center', gap: isMobile ? 10 : 16, padding: isMobile ? '12px' : '12px 18px', borderRadius: 12,
                 background: isMine ? 'rgba(var(--accent-rgb),0.08)' : 'transparent',
                 border: isMine ? '1px solid rgba(var(--accent-rgb),0.3)' : '1px solid transparent',

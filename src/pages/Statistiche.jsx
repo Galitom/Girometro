@@ -24,6 +24,7 @@ export default function Statistiche() {
 
   const total = me.w + me.l;
   const wr = total ? Math.round(me.w / total * 100) : 0;
+  const peak = stats.eloSeries?.length ? Math.max(...stats.eloSeries) : me.elo;
 
   return (
     <div className="screen-in">
@@ -41,10 +42,10 @@ export default function Statistiche() {
               <div className="mono" style={{ fontSize: 11, letterSpacing: '0.16em', color: 'var(--dim)', textTransform: 'uppercase' }}>Andamento Elo · 90 giorni</div>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginTop: 6 }}>
                 <span className="disp txt-glow" style={{ fontSize: 56, fontWeight: 700, lineHeight: 0.8, color: 'var(--accent)' }}>{me.elo}</span>
-                <Delta value={+140} />
+                <Delta value={me.delta} />
               </div>
             </div>
-            <Chip tone="accent">Picco 1851</Chip>
+            <Chip tone="accent">Picco {peak}</Chip>
           </div>
           <LineChart data={stats.eloSeries} />
         </Panel>

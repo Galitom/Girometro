@@ -161,7 +161,7 @@ export default function Dashboard() {
               const names = arr => arr.map(p => p.name.split(' ')[0]).join(' e ');
               const is2v2 = ev.teamA.length > 1 || ev.teamB.length > 1;
               return (
-                <div key={ev.id} style={{
+                <div key={ev.id} className="row-divider" style={{
                   display: 'flex', alignItems: 'center', gap: 14,
                   padding: '12px 8px', borderRadius: 12,
                   background: ev.mine ? 'rgba(var(--accent-rgb),0.06)' : 'transparent',
